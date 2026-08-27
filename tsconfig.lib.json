@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": [
+    "packages/**/*.ts",
+    "packages/**/*.d.ts",
+    "packages/**/*.vue",
+    "internal/**/*.ts",
+    "internal/types/**/*.d.ts"
+  ],
+  "references": []
+}

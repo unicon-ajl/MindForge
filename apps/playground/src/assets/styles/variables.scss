@@ -1,0 +1,56 @@
+// ============================================================
+// MindForge Design Tokens — SCSS 变量（编译时）
+// 运行时主题定制通过 CSS Custom Properties 实现
+// 详见 theme.scss
+// ============================================================
+
+// 颜色变量
+$--color-primary: #409eff !default;
+$--color-success: #67c23a !default;
+$--color-warning: #e6a23c !default;
+$--color-danger: #f56c6c !default;
+$--color-info: #909399 !default;
+
+// 文字颜色
+$--color-text-primary: #303133 !default;
+$--color-text-regular: #606266 !default;
+$--color-text-secondary: #909399 !default;
+$--color-text-placeholder: #c0c4cc !default;
+
+// 边框颜色
+$--border-color-base: #dcdfe6 !default;
+$--border-color-light: #e4e7ed !default;
+$--border-color-lighter: #ebeef5 !default;
+$--border-color-extra-light: #f2f6fc !default;
+
+// 背景色
+$--background-color-base: #f5f7fa !default;
+$--background-color-light: #fafafa !default;
+
+// 字体大小
+$--font-size-extra-small: 12px !default;
+$--font-size-small: 13px !default;
+$--font-size-base: 14px !default;
+$--font-size-medium: 16px !default;
+$--font-size-large: 18px !default;
+
+// 间距
+$--spacing-xs: 4px !default;
+$--spacing-sm: 8px !default;
+$--spacing-md: 16px !default;
+$--spacing-lg: 24px !default;
+$--spacing-xl: 32px !default;
+
+// 圆角
+$--border-radius-base: 4px !default;
+$--border-radius-small: 2px !default;
+$--border-radius-large: 6px !default;
+
+// 阴影
+$--box-shadow-base: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !default;
+$--box-shadow-light:
+  0 2px 4px rgba(0, 0, 0, 0.12),
+  0 0 6px rgba(0, 0, 0, 0.04) !default;
+
+// 过渡动画
+$--transition-duration-base: 0.3s !default;

@@ -1,0 +1,79 @@
+- generic [ref=f1e3]:
+    - banner [ref=f1e4]:
+        - heading "MindForge" [level=1] [ref=f1e5]
+        - paragraph [ref=f1e6]: Vue3 + TypeScript + Vite 通用组件库
+    - main [ref=f1e7]:
+        - generic [ref=f1e8]:
+            - heading "🎨 组件演示" [level=2] [ref=f1e9]
+            - generic [ref=f1e10]:
+                - heading "Button 按钮" [level=3] [ref=f1e11]
+                - generic [ref=f1e12]:
+                    - button "Primary" [ref=f1e13] [cursor=pointer]:
+                        - generic [ref=f1e14]: Primary
+                    - button "Success" [ref=f1e15] [cursor=pointer]:
+                        - generic [ref=f1e16]: Success
+                    - button "Warning" [ref=f1e17] [cursor=pointer]:
+                        - generic [ref=f1e18]: Warning
+                    - button "Danger" [ref=f1e19] [cursor=pointer]:
+                        - generic [ref=f1e20]: Danger
+                    - button "Loading" [ref=f1e21] [cursor=pointer]:
+                        - generic [ref=f1e22]: Loading
+            - generic [ref=f1e23]:
+                - heading "Input 输入框" [level=3] [ref=f1e24]
+                - textbox "请输入" [ref=f1e27]
+            - generic [ref=f1e28]:
+                - heading "Tag 标签" [level=3] [ref=f1e29]
+                - generic [ref=f1e30]:
+                    - generic [ref=f1e31]: Primary
+                    - generic [ref=f1e32]: Success
+                    - generic [ref=f1e33]: Warning
+                    - generic [ref=f1e34]: Danger
+            - generic [ref=f1e35]:
+                - heading "Message 消息" [level=3] [ref=f1e36]
+                - generic [ref=f1e37]:
+                    - button "成功" [ref=f1e38] [cursor=pointer]:
+                        - generic [ref=f1e39]: 成功
+                    - button "警告" [ref=f1e40] [cursor=pointer]:
+                        - generic [ref=f1e41]: 警告
+                    - button "错误" [ref=f1e42] [cursor=pointer]:
+                        - generic [ref=f1e43]: 错误
+            - generic [ref=f1e44]:
+                - heading "Modal 弹窗" [level=3] [ref=f1e45]
+                - button "打开弹窗" [ref=f1e47] [cursor=pointer]:
+                    - generic [ref=f1e48]: 打开弹窗
+            - generic [ref=f1e49]:
+                - heading "Loading 加载" [level=3] [ref=f1e50]
+                - button "显示加载" [ref=f1e52] [cursor=pointer]:
+                    - generic [ref=f1e53]: 显示加载
+            - generic [ref=f1e54]:
+                - heading "Empty 空状态" [level=3] [ref=f1e55]
+                - generic [ref=f1e57]:
+                    - img [ref=f1e59]
+                    - generic [ref=f1e62]: 暂无数据
+        - generic [ref=f1e63]:
+            - heading "⚡ 工具函数演示" [level=2] [ref=f1e64]
+            - generic [ref=f1e65]:
+                - heading "日期格式化" [level=3] [ref=f1e66]
+                - generic [ref=f1e67]:
+                    - paragraph [ref=f1e68]: '当前日期: 2026-06-30 16:07:41'
+                    - paragraph [ref=f1e69]: '相对时间: 1分钟前'
+            - generic [ref=f1e70]:
+                - heading "金额格式化" [level=3] [ref=f1e71]
+                - paragraph [ref=f1e73]: '1234567.89 格式化后: 1,234,567.89'
+            - generic [ref=f1e74]:
+                - heading "UUID 生成" [level=3] [ref=f1e75]
+                - generic [ref=f1e76]:
+                    - paragraph [ref=f1e77]: d1e1ae76-897c-46f1-9ced-a787b5b6601d
+                    - button "刷新" [ref=f1e78] [cursor=pointer]:
+                        - generic [ref=f1e79]: 刷新
+        - generic [ref=f1e80]:
+            - heading "🎣 Hooks 演示" [level=2] [ref=f1e81]
+            - generic [ref=f1e82]:
+                - heading "useStorage" [level=3] [ref=f1e83]
+                - generic [ref=f1e84]:
+                    - textbox "输入测试" [ref=f1e86]: 测试数据
+                    - paragraph [ref=f1e87]: 'Storage 中的值: 测试数据'
+            - generic [ref=f1e88]:
+                - heading "useModal" [level=3] [ref=f1e89]
+                - button "打开弹窗" [ref=f1e91] [cursor=pointer]:
+                    - generic [ref=f1e92]: 打开弹窗

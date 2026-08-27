@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    // 面向现代浏览器，由 Vite 负责打包。
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    // 严格检查，尽早暴露类型问题。
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    // 路径映射只表达模块边界，不依赖已废弃的 baseUrl。
+    "paths": {
+      "@/*": ["./apps/playground/src/*"],
+      "@packages/*": ["./packages/*"],
+      "@internal/*": ["./internal/*"],
+      "@assets/*": ["./apps/playground/src/assets/*"]
+    },
+    "types": ["vitest/globals", "node", "vitepress/client"]
+  },
+  // 同时检查应用、正式能力、内部实现和文档配置。
+  "include": [
+    "apps/playground/src/**/*.ts",
+    "apps/playground/src/**/*.d.ts",
+    "apps/playground/src/**/*.tsx",
+    "apps/playground/src/**/*.vue",
+    "packages/**/*.ts",
+    "packages/**/*.d.ts",
+    "packages/**/*.vue",
+    "internal/**/*.ts",
+    "internal/types/**/*.d.ts",
+    "apps/docs/.vitepress/**/*.ts"
+  ],
+  // 构建工具使用独立的 Node 环境配置。
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}

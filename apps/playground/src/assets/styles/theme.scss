@@ -1,0 +1,86 @@
+// ============================================================
+// MindForge 主题系统 — CSS Custom Properties
+// 消费者可通过 :root 选择器覆盖变量来定制主题
+//
+// 使用方式：
+//   1. 全局覆盖：:root { --mf-color-primary: #your-color; }
+//   2. 局部覆盖：.custom-theme { --mf-color-primary: #your-color; }
+//   3. JS 动态：document.documentElement.style.setProperty('--mf-color-primary', '#xxx')
+//   4. 预设主题：import { applyTheme } from 'mind-forge'; applyTheme('dark')
+// ============================================================
+
+:root {
+  // ── 品牌色 ──
+  --mf-color-primary: #409eff;
+  --mf-color-success: #67c23a;
+  --mf-color-warning: #e6a23c;
+  --mf-color-danger: #f56c6c;
+  --mf-color-info: #909399;
+
+  // ── 文字色 ──
+  --mf-color-text-primary: #303133;
+  --mf-color-text-regular: #606266;
+  --mf-color-text-secondary: #909399;
+  --mf-color-text-placeholder: #c0c4cc;
+
+  // ── 边框色 ──
+  --mf-border-color-base: #dcdfe6;
+  --mf-border-color-light: #e4e7ed;
+  --mf-border-color-lighter: #ebeef5;
+  --mf-border-color-extra-light: #f2f6fc;
+
+  // ── 背景色 ──
+  --mf-bg-color-base: #f5f7fa;
+  --mf-bg-color-light: #fafafa;
+  --mf-bg-color-white: #ffffff;
+
+  // ── 字体 ──
+  --mf-font-size-xs: 12px;
+  --mf-font-size-sm: 13px;
+  --mf-font-size-base: 14px;
+  --mf-font-size-md: 16px;
+  --mf-font-size-lg: 18px;
+
+  // ── 间距 ──
+  --mf-spacing-xs: 4px;
+  --mf-spacing-sm: 8px;
+  --mf-spacing-md: 16px;
+  --mf-spacing-lg: 24px;
+  --mf-spacing-xl: 32px;
+
+  // ── 圆角 ──
+  --mf-border-radius-sm: 2px;
+  --mf-border-radius-base: 4px;
+  --mf-border-radius-lg: 6px;
+  --mf-border-radius-round: 9999px;
+
+  // ── 阴影 ──
+  --mf-shadow-base: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  --mf-shadow-light: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+
+  // ── 动画 ──
+  --mf-transition-duration: 0.3s;
+  --mf-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  // ── 组件级变量（可在组件内覆盖） ──
+  --mf-button-padding-y: 9px;
+  --mf-button-padding-x: 20px;
+  --mf-button-font-size: 14px;
+
+  --mf-input-padding-y: 9px;
+  --mf-input-padding-x: 15px;
+  --mf-input-font-size: 14px;
+
+  --mf-modal-min-width: 400px;
+  --mf-modal-border-radius: 6px;
+
+  --mf-tag-padding-y: 2px;
+  --mf-tag-padding-x: 8px;
+  --mf-tag-font-size: 12px;
+
+  --mf-message-padding: 12px 20px;
+  --mf-message-top: 20px;
+
+  --mf-loading-dot-color: #409eff;
+  --mf-loading-text-color: #409eff;
+}

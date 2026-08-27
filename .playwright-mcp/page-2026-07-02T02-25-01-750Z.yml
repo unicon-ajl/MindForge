@@ -1,0 +1,99 @@
+- generic [ref=e3]:
+    - banner [ref=e4]:
+        - generic [ref=e5]:
+            - generic [ref=e6]: ⚡
+            - heading "MindForge" [level=1] [ref=e7]
+        - generic [ref=e9] [cursor=pointer]:
+            - generic [ref=e10]: 🔍
+            - generic [ref=e11]: 搜索...
+            - generic [ref=e12]: ⌘K
+    - generic [ref=e13]:
+        - complementary [ref=e14]:
+            - navigation [ref=e15]:
+                - generic [ref=e16]:
+                    - generic [ref=e17] [cursor=pointer]:
+                        - generic [ref=e18]: ▸
+                        - generic [ref=e19]: 🎨 组件
+                    - list [ref=e20]:
+                        - listitem [ref=e21] [cursor=pointer]:
+                            - generic [ref=e23]: Button 按钮
+                        - listitem [ref=e24] [cursor=pointer]:
+                            - generic [ref=e26]: Input 输入框
+                        - listitem [ref=e27] [cursor=pointer]:
+                            - generic [ref=e29]: Modal 弹窗
+                        - listitem [ref=e30] [cursor=pointer]:
+                            - generic [ref=e32]: Tag 标签
+                        - listitem [ref=e33] [cursor=pointer]:
+                            - generic [ref=e35]: Loading 加载
+                        - listitem [ref=e36] [cursor=pointer]:
+                            - generic [ref=e38]: Empty 空状态
+                        - listitem [ref=e39] [cursor=pointer]:
+                            - generic [ref=e41]: Tooltip 提示
+                        - listitem [ref=e42] [cursor=pointer]:
+                            - generic [ref=e44]: Pagination 分页
+                - generic [ref=e45]:
+                    - generic [ref=e46] [cursor=pointer]:
+                        - generic [ref=e47]: ▸
+                        - generic [ref=e48]: ⚡ 工具函数
+                    - list [ref=e49]:
+                        - listitem [ref=e50] [cursor=pointer]:
+                            - generic [ref=e52]: Date 日期
+                        - listitem [ref=e53] [cursor=pointer]:
+                            - generic [ref=e55]: Number 数字
+                        - listitem [ref=e56] [cursor=pointer]:
+                            - generic [ref=e58]: UUID 生成
+                        - listitem [ref=e59] [cursor=pointer]:
+                            - generic [ref=e61]: Validate 校验
+                - generic [ref=e62]:
+                    - generic [ref=e63] [cursor=pointer]:
+                        - generic [ref=e64]: ▸
+                        - generic [ref=e65]: 🎣 Hooks
+                    - list [ref=e66]:
+                        - listitem [ref=e67] [cursor=pointer]:
+                            - generic [ref=e69]: useStorage
+                        - listitem [ref=e70] [cursor=pointer]:
+                            - generic [ref=e72]: useModal
+                        - listitem [ref=e73] [cursor=pointer]:
+                            - generic [ref=e75]: useRequest
+                        - listitem [ref=e76] [cursor=pointer]:
+                            - generic [ref=e78]: useTable
+                - generic [ref=e79]:
+                    - generic [ref=e80] [cursor=pointer]:
+                        - generic [ref=e81]: ▸
+                        - generic [ref=e82]: 🔌 插件
+                    - list [ref=e83]:
+                        - listitem [ref=e84] [cursor=pointer]:
+                            - generic [ref=e86]: Message 消息
+                        - listitem [ref=e87] [cursor=pointer]:
+                            - generic [ref=e89]: Loading 加载
+                - generic [ref=e90]:
+                    - generic [ref=e91] [cursor=pointer]:
+                        - generic [ref=e92]: ▸
+                        - generic [ref=e93]: 📎 指令
+                    - list [ref=e94]:
+                        - listitem [ref=e95] [cursor=pointer]:
+                            - generic [ref=e97]: v-copy 复制
+                        - listitem [ref=e98] [cursor=pointer]:
+                            - generic [ref=e100]: v-lazy 懒加载
+                        - listitem [ref=e101] [cursor=pointer]:
+                            - generic [ref=e103]: v-permission 权限
+                        - listitem [ref=e104] [cursor=pointer]:
+                            - generic [ref=e106]: v-tooltip 提示
+                        - listitem [ref=e107] [cursor=pointer]:
+                            - generic [ref=e109]: v-debounce 防抖
+                        - listitem [ref=e110] [cursor=pointer]:
+                            - generic [ref=e112]: v-throttle 节流
+                - generic [ref=e113]:
+                    - generic [ref=e114] [cursor=pointer]:
+                        - generic [ref=e115]: ▸
+                        - generic [ref=e116]: 🎨 主题系统
+                    - list [ref=e117]:
+                        - listitem [ref=e118] [cursor=pointer]:
+                            - generic [ref=e120]: 主题演示
+        - main [ref=e121]:
+            - generic [ref=e122]:
+                - generic [ref=e123]: 🎨 组件
+                - generic [ref=e124]: /
+                - generic [ref=e125]: Button 按钮
+            - navigation [ref=e127]:
+                - button "Input 输入框 →" [ref=e128] [cursor=pointer]

@@ -1,0 +1,137 @@
+- generic [ref=e3]:
+    - banner [ref=e4]:
+        - generic [ref=e5]:
+            - generic [ref=e6]: ⚡
+            - heading "MindForge" [level=1] [ref=e7]
+        - generic [ref=e9] [cursor=pointer]:
+            - generic [ref=e10]: 🔍
+            - generic [ref=e11]: 搜索...
+            - generic [ref=e12]: ⌘K
+    - generic [ref=e13]:
+        - complementary [ref=e14]:
+            - navigation [ref=e15]:
+                - generic [ref=e16]:
+                    - generic [ref=e17] [cursor=pointer]:
+                        - generic [ref=e18]: ▸
+                        - generic [ref=e19]: 🎨 组件
+                    - list [ref=e20]:
+                        - listitem [ref=e21] [cursor=pointer]:
+                            - generic [ref=e23]: Button 按钮
+                        - listitem [ref=e24] [cursor=pointer]:
+                            - generic [ref=e26]: Input 输入框
+                        - listitem [ref=e27] [cursor=pointer]:
+                            - generic [ref=e29]: Modal 弹窗
+                        - listitem [ref=e30] [cursor=pointer]:
+                            - generic [ref=e32]: Tag 标签
+                        - listitem [ref=e33] [cursor=pointer]:
+                            - generic [ref=e35]: Loading 加载
+                        - listitem [ref=e36] [cursor=pointer]:
+                            - generic [ref=e38]: Empty 空状态
+                        - listitem [ref=e39] [cursor=pointer]:
+                            - generic [ref=e41]: Tooltip 提示
+                        - listitem [ref=e42] [cursor=pointer]:
+                            - generic [ref=e44]: Pagination 分页
+                - generic [ref=e45]:
+                    - generic [ref=e46] [cursor=pointer]:
+                        - generic [ref=e47]: ▸
+                        - generic [ref=e48]: ⚡ 工具函数
+                    - list [ref=e49]:
+                        - listitem [ref=e50] [cursor=pointer]:
+                            - generic [ref=e52]: Date 日期
+                        - listitem [ref=e53] [cursor=pointer]:
+                            - generic [ref=e55]: Number 数字
+                        - listitem [ref=e56] [cursor=pointer]:
+                            - generic [ref=e58]: UUID 生成
+                        - listitem [ref=e59] [cursor=pointer]:
+                            - generic [ref=e61]: Validate 校验
+                - generic [ref=e62]:
+                    - generic [ref=e63] [cursor=pointer]:
+                        - generic [ref=e64]: ▸
+                        - generic [ref=e65]: 🎣 Hooks
+                    - list [ref=e66]:
+                        - listitem [ref=e67] [cursor=pointer]:
+                            - generic [ref=e69]: useStorage
+                        - listitem [ref=e70] [cursor=pointer]:
+                            - generic [ref=e72]: useModal
+                        - listitem [ref=e73] [cursor=pointer]:
+                            - generic [ref=e75]: useRequest
+                        - listitem [ref=e76] [cursor=pointer]:
+                            - generic [ref=e78]: useTable
+                - generic [ref=e79]:
+                    - generic [ref=e80] [cursor=pointer]:
+                        - generic [ref=e81]: ▸
+                        - generic [ref=e82]: 🔌 插件
+                    - list [ref=e83]:
+                        - listitem [ref=e84] [cursor=pointer]:
+                            - generic [ref=e86]: Message 消息
+                        - listitem [ref=e87] [cursor=pointer]:
+                            - generic [ref=e89]: Loading 加载
+                - generic [ref=e90]:
+                    - generic [ref=e91] [cursor=pointer]:
+                        - generic [ref=e92]: ▸
+                        - generic [ref=e93]: 📎 指令
+                    - list [ref=e94]:
+                        - listitem [ref=e95] [cursor=pointer]:
+                            - generic [ref=e97]: v-copy 复制
+                        - listitem [ref=e98] [cursor=pointer]:
+                            - generic [ref=e100]: v-lazy 懒加载
+                        - listitem [ref=e101] [cursor=pointer]:
+                            - generic [ref=e103]: v-permission 权限
+                        - listitem [ref=e104] [cursor=pointer]:
+                            - generic [ref=e106]: v-tooltip 提示
+                        - listitem [ref=e107] [cursor=pointer]:
+                            - generic [ref=e109]: v-debounce 防抖
+                        - listitem [ref=e110] [cursor=pointer]:
+                            - generic [ref=e112]: v-throttle 节流
+                - generic [ref=e113]:
+                    - generic [ref=e114] [cursor=pointer]:
+                        - generic [ref=e115]: ▸
+                        - generic [ref=e116]: 🎨 主题系统
+                    - list [ref=e117]:
+                        - listitem [ref=e118] [cursor=pointer]:
+                            - generic [ref=e120]: 主题演示
+        - main [ref=e121]:
+            - generic [ref=e122]:
+                - generic [ref=e123]: 🎨 组件
+                - generic [ref=e124]: /
+                - generic [ref=e125]: Button 按钮
+            - generic [ref=e127]:
+                - paragraph [ref=e128]: 常用的操作按钮，支持多种类型和状态。
+                - generic [ref=e129]:
+                    - heading "类型 不同语义颜色" [level=4] [ref=e130]:
+                        - generic [ref=e131]: 类型
+                        - text: 不同语义颜色
+                    - generic [ref=e132]:
+                        - button "Primary" [ref=e133] [cursor=pointer]:
+                            - generic [ref=e134]: Primary
+                        - button "Success" [ref=e135] [cursor=pointer]:
+                            - generic [ref=e136]: Success
+                        - button "Warning" [ref=e137] [cursor=pointer]:
+                            - generic [ref=e138]: Warning
+                        - button "Danger" [ref=e139] [cursor=pointer]:
+                            - generic [ref=e140]: Danger
+                        - button "Default" [ref=e141] [cursor=pointer]:
+                            - generic [ref=e142]: Default
+                - generic [ref=e143]:
+                    - heading "状态 加载与禁用" [level=4] [ref=e144]:
+                        - generic [ref=e145]: 状态
+                        - text: 加载与禁用
+                    - generic [ref=e146]:
+                        - button "点击加载" [ref=e147] [cursor=pointer]:
+                            - generic [ref=e148]: 点击加载
+                        - button "禁用状态" [disabled] [ref=e149]:
+                            - generic [ref=e150]: 禁用状态
+                    - paragraph [ref=e151]: 💡 loading 状态自动禁用点击，防止重复提交
+                - generic [ref=e152]:
+                    - heading "尺寸 大中小三种规格" [level=4] [ref=e153]:
+                        - generic [ref=e154]: 尺寸
+                        - text: 大中小三种规格
+                    - generic [ref=e155]:
+                        - button "Small" [ref=e156] [cursor=pointer]:
+                            - generic [ref=e157]: Small
+                        - button "Medium" [ref=e158] [cursor=pointer]:
+                            - generic [ref=e159]: Medium
+                        - button "Large" [ref=e160] [cursor=pointer]:
+                            - generic [ref=e161]: Large
+            - navigation [ref=e162]:
+                - button "Input 输入框 →" [ref=e163] [cursor=pointer]
