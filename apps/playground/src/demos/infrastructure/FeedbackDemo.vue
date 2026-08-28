@@ -11,6 +11,7 @@
     <div class="demo-block">
       <h4>任务型通知</h4>
       <button class="demo-button" @click="showPromiseMessage">运行 Promise 通知</button>
+      <p class="demo-tip">同一条消息原位展示 pending、success 或 error，避免重复堆叠通知。</p>
     </div>
 
     <div class="demo-block">
@@ -66,8 +67,7 @@ onScopeDispose(() => loader.value?.close())
 </script>
 
 <style scoped lang="scss">
-.demo-desc,
-.demo-tip {
+.demo-desc {
   color: var(--mf-color-text-secondary);
   font-size: 13px;
 }

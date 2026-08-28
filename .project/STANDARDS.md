@@ -45,15 +45,27 @@ apps/mock-server/   开发辅助服务
 - `internal` 永不从公共入口导出；
 - 不提供 experimental 公共入口。
 
-## 5. 三处同步
+## 5. 变更同步
 
-新增能力必须同步：
+任何代码变更都必须检查并同步关联文档，不限于新增能力。
+
+| 代码变更                    | 必须同步检查                |
+| --------------------------- | --------------------------- |
+| 公共 API、Props、事件、类型 | 能力文档、Demo、README 示例 |
+| 行为、默认值、边界条件      | 能力文档、Demo 提示、测试   |
+| 导出路径、目录、依赖        | README、快速开始、构建配置  |
+| 样式和交互                  | Playground Demo、交互说明   |
+| 删除或重命名                | 全部引用、导航、文档和示例  |
+
+新增能力必须同时落地：
 
 ```text
 packages/<capability>/
 apps/playground/src/demos/<domain>/<Capability>Demo.vue
 apps/docs/<domain>/<capability>.md
 ```
+
+不存在关联文档时，应在交付说明中明确写明“无需更新文档”及原因，不得默认跳过。
 
 ## 6. 交付门禁
 
