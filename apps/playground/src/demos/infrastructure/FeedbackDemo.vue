@@ -13,11 +13,17 @@
       <button class="demo-button" @click="showPromiseMessage">运行 Promise 通知</button>
     </div>
 
-    <div ref="targetRef" class="loading-target">
-      局部容器原本可以滚动
+    <div class="demo-block">
+      <h4>局部 Loading</h4>
       <button class="demo-button" @click="toggleLocalLoading">
         {{ loader ? '关闭' : '打开' }}局部 Loading
       </button>
+      <p class="demo-tip">控制按钮位于目标容器外，遮罩显示后仍可主动关闭。</p>
+    </div>
+
+    <div ref="targetRef" class="loading-target">
+      <span>局部容器原本可以滚动</span>
+      <span>Loading 只覆盖当前容器，不影响页面其他区域。</span>
     </div>
 
     <MfModal v-model:visible="firstVisible" title="第一层">
@@ -71,6 +77,9 @@ onScopeDispose(() => loader.value?.close())
   padding: 20px;
   background: var(--mf-bg-color-light);
   border-radius: var(--mf-border-radius-base);
+}
+.demo-block h4 {
+  margin: 0 0 12px;
 }
 .loading-target {
   height: 140px;

@@ -1,5 +1,10 @@
 <template>
-  <div class="mf-message-host" aria-live="polite" aria-relevant="additions removals">
+  <div
+    class="mf-message-host"
+    :style="{ zIndex: hostZIndex }"
+    aria-live="polite"
+    aria-relevant="additions removals"
+  >
     <TransitionGroup name="mf-message-list" tag="div" class="mf-message-list">
       <div
         v-for="item in items"
@@ -28,13 +33,16 @@
 
 /** @module MessageHost 集中渲染消息，并提供无障碍播报。 */
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { MessageRecord, MessageType } from './message'
 
 defineOptions({ name: 'MfMessageHost' })
-defineProps<{ items: MessageRecord[] }>()
+const props = defineProps<{ items: MessageRecord[] }>()
 defineEmits<{ close: [id: string]; pause: [id: string]; resume: [id: string] }>()
 
 const closeLabel = 'Close'
+// fixed 元素会创建独立堆叠上下文，层级必须加在 Host 上。
+const hostZIndex = computed(() => Math.max(0, ...props.items.map(item => item.zIndex)))
 const icons: Record<MessageType, string> = {
   success: '✓',
   warning: '⚠',
@@ -58,6 +66,8 @@ const icons: Record<MessageType, string> = {
 }
 
 .mf-message {
+  // 定位元素才能让每条消息的动态 z-index 生效。
+  position: relative;
   pointer-events: auto;
   max-width: min(560px, calc(100vw - 32px));
   padding: var(--mf-message-padding, 10px 16px);
