@@ -1,4 +1,4 @@
-/** 主服务路由汇总 */
+/** @module MainMockRoutes 提供用户 CRUD 与简化认证流程。 */
 
 import { Router } from 'express'
 import { delay } from '../../middleware/delay'
@@ -14,12 +14,14 @@ interface User {
   role: string
 }
 
+// 数据只存在于当前进程内，重启服务即可恢复初始状态。
 const users: User[] = [
   { id: 1, name: '张三', age: 25, email: 'zhangsan@example.com', role: 'admin' },
   { id: 2, name: '李四', age: 30, email: 'lisi@example.com', role: 'user' },
   { id: 3, name: '王五', age: 28, email: 'wangwu@example.com', role: 'user' }
 ]
 
+// Set 足以模拟会话有效性，不承担真实鉴权或安全能力。
 const tokens = new Set<string>()
 
 // ===== 用户接口 =====
@@ -54,6 +56,7 @@ router.get('/users/:id', (req, res) => {
 // 创建
 router.post('/users', async (req, res) => {
   await delay(500)
+  // 默认字段先铺底，再允许请求体覆盖，便于演示不同表单负载。
   const newUser: User = {
     id: users.length + 1,
     name: '',

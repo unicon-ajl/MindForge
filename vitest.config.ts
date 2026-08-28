@@ -14,6 +14,7 @@ export default defineConfig({
     }
   },
   resolve: {
+    // 与 Vite 保持完全相同的别名，测试和实际构建解析结果才一致。
     alias: {
       '@': resolve(__dirname, 'apps/playground/src'),
       '@packages': resolve(__dirname, 'packages'),

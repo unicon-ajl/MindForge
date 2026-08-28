@@ -2,13 +2,19 @@
 export type CapabilityMaturity = 'beta' | 'stable' | 'deprecated'
 
 export interface CapabilityDefinition {
+  /** 跨文档、导航和自动化使用的稳定标识。 */
   id: string
+  /** 面向使用者的能力名称。 */
   name: string
+  /** 当前发布成熟度。 */
   maturity: CapabilityMaturity
+  /** 该能力解决的核心问题，而不是实现技术描述。 */
   problem: string
+  /** npm 子路径入口，用于校验导出完整性。 */
   entry: string
 }
 
+/** 正式能力的单一事实来源；低价值实验不得进入此清单。 */
 export const capabilityCatalog = [
   {
     id: 'feedback',

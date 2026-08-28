@@ -85,6 +85,7 @@ const controlledItems: TypewriterItem[] = [
 ]
 
 const controllerRef = ref<TypewriterInstance>()
+// phase 和 lastEvent 直接展示组件对外事件，便于人工验证状态机语义。
 const phase = ref<TypewriterPhase>('idle')
 const lastEvent = ref('等待事件')
 </script>

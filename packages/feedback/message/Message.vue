@@ -14,6 +14,7 @@ import type { MessageType } from './message'
 
 defineOptions({ name: 'MfMessage' })
 
+/** 单消息表现组件；队列版通知由 MessageHost 统一渲染。 */
 interface Props {
   message: string
   type: MessageType
@@ -21,6 +22,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+// visible 先驱动退场动画，动画结束后再通知调用方真正移除记录。
 const visible = ref(true)
 
 const icon = computed(() => {
@@ -35,6 +37,7 @@ const icon = computed(() => {
 
 let closeTimer: ReturnType<typeof setTimeout> | null = null
 
+/** 播放退场状态，并在持续时间结束后执行外部关闭动作。 */
 const handleClose = () => {
   visible.value = false
   closeTimer = setTimeout(() => {
@@ -43,7 +46,7 @@ const handleClose = () => {
   }, 300)
 }
 
-// 组件卸载时清理定时器，避免对已 unmount 的 app 操作
+// 组件卸载时清理定时器，避免对已销毁的组件继续调用回调。
 onScopeDispose(() => {
   if (closeTimer) {
     clearTimeout(closeTimer)
@@ -54,6 +57,7 @@ onScopeDispose(() => {
 
 <style scoped lang="scss">
 .mf-message {
+  // 独立组件使用 fixed 居中；消息队列场景由 MessageHost 接管布局。
   position: fixed;
   top: var(--mf-message-top, 20px);
   left: 50%;

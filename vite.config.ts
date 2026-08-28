@@ -4,6 +4,7 @@ import { resolve } from 'path'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig(({ command, mode }) => {
+  // 单一配置同时服务组件库和 Playground，两种产物必须写入不同目录。
   const isBuildLib = mode === 'lib'
   const isDev = command === 'serve'
   const playgroundRoot = resolve(__dirname, 'apps/playground')
@@ -35,6 +36,7 @@ export default defineConfig(({ command, mode }) => {
       preprocessorOptions: {
         scss: {
           api: 'modern',
+          // 所有 Vue/SCSS 文件共享设计变量，无需逐文件重复 @use。
           additionalData: `@use "@assets/styles/variables.scss" as *;`
         }
       }
@@ -65,6 +67,7 @@ export default defineConfig(({ command, mode }) => {
         },
     server: {
       proxy: {
+        // Playground 使用相对 /api，开发时代理到独立 Mock Server。
         '/api': {
           target: 'http://localhost:3001',
           changeOrigin: true

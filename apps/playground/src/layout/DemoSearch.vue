@@ -53,6 +53,7 @@ const query = ref('')
 const selectedIndex = ref(0)
 const inputRef = ref<HTMLInputElement | null>(null)
 
+/** 搜索同时匹配用户可见标题和稳定 id，不区分大小写。 */
 const filteredItems = computed(() => {
   if (!query.value.trim()) return allSidebarItems
   const q = query.value.toLowerCase()
@@ -72,6 +73,7 @@ function getGroupName(id: string): string {
 }
 
 function goTo(id: string) {
+  // 先通知布局切换页面，再统一重置搜索会话。
   emit('select', id)
   close()
 }
@@ -87,6 +89,7 @@ function onInput() {
 }
 
 function handleKeydown(e: KeyboardEvent) {
+  // 方向键只在当前结果范围内移动，Enter 选择，ESC 退出。
   if (e.key === 'ArrowDown') {
     e.preventDefault()
     selectedIndex.value = Math.min(selectedIndex.value + 1, filteredItems.value.length - 1)
@@ -107,6 +110,7 @@ watch(
   () => props.visible,
   async val => {
     if (val) {
+      // Teleport 内容需等待下一轮 DOM 更新后才能可靠聚焦。
       await nextTick()
       inputRef.value?.focus()
     }
@@ -114,6 +118,7 @@ watch(
 )
 
 function handleGlobalKeydown(e: KeyboardEvent) {
+  // 同时支持 macOS 的 Command 和 Windows/Linux 的 Control。
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault()
     if (!props.visible) {
@@ -127,12 +132,14 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  // 全局快捷键监听必须与组件生命周期成对释放。
   document.removeEventListener('keydown', handleGlobalKeydown)
 })
 </script>
 
 <style scoped lang="scss">
 .demo-search-overlay {
+  // 搜索是 Playground 最高层交互，覆盖 Header、Sidebar 和 Demo 内部浮层入口。
   position: fixed;
   top: 0;
   left: 0;

@@ -31,6 +31,7 @@ import type { LoadingSpinnerType } from './loading'
 
 defineOptions({ name: 'MfLoadingPlugin' })
 
+/** 该组件只负责渲染；实例创建、计时和资源清理由 loading.ts 管理。 */
 const props = defineProps<{
   text?: string
   spinner?: LoadingSpinnerType
@@ -41,6 +42,7 @@ const props = defineProps<{
 }>()
 
 const maskStyle = computed(() => {
+  // 使用内联变量让单个实例可定制颜色，同时保留全局 CSS 变量的默认值。
   const styles: Record<string, string> = {}
   if (props.background) {
     styles.background = props.background
@@ -56,6 +58,7 @@ const maskStyle = computed(() => {
 
 <style scoped lang="scss">
 .mf-loading-mask {
+  // 全屏默认使用 fixed；局部模式切换为 absolute 并依赖目标元素的定位上下文。
   position: fixed;
   top: 0;
   left: 0;
@@ -92,6 +95,7 @@ const maskStyle = computed(() => {
   animation: loading-dot 1.2s ease-in-out infinite;
 
   @for $i from 1 through 12 {
+    // 均匀旋转并错开动画相位，形成连续环形运动。
     &:nth-child(#{$i}) {
       transform: rotate(($i - 1) * 30deg);
       animation-delay: ($i - 1) * 0.1s;
@@ -120,6 +124,7 @@ const maskStyle = computed(() => {
   animation: loading-bar 1s ease-in-out infinite;
 
   @for $i from 1 through 5 {
+    // 相邻横条错峰缩放，避免所有条同时跳动。
     &:nth-child(#{$i}) {
       animation-delay: ($i - 1) * 0.15s;
     }

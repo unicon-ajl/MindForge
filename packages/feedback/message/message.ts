@@ -5,15 +5,22 @@ import { overlayManager } from '@internal/overlay'
 
 export type MessageType = 'success' | 'warning' | 'error' | 'info'
 
+/** 创建通知时的内容、时长和交互策略。 */
 export interface MessageOptions {
+  /** 通知正文，按纯文本渲染。 */
   message: string
   type?: MessageType
+  /** 自动关闭时间，单位为 ms；0 表示持续显示。 */
   duration?: number
+  /** 是否展示主动关闭按钮。 */
   closable?: boolean
+  /** 悬停时是否暂停剩余倒计时。 */
   pauseOnHover?: boolean
+  /** 通知被关闭且移出队列后调用。 */
   onClose?: () => void
 }
 
+/** 交给 MessageHost 渲染的标准化记录。 */
 export interface MessageRecord {
   id: string
   message: string
@@ -37,6 +44,7 @@ interface TimerState {
 }
 
 const MAX_COUNT = 5
+// 所有消息共享响应式队列和单个 Vue Host，避免频繁创建独立应用实例。
 const records = reactive<MessageRecord[]>([])
 const timers = new Map<string, TimerState>()
 let hostApp: App | null = null
@@ -45,7 +53,7 @@ let idSeed = 0
 let destroyTimer: ReturnType<typeof setTimeout> | null = null
 
 function ensureHost(): void {
-  // 所有消息共用一个 Vue 根实例，降低频繁挂载成本。
+  // SSR 不创建 DOM；客户端仅在第一条消息到来时按需挂载。
   if (hostApp || typeof document === 'undefined') return
   hostContainer = document.createElement('div')
   hostContainer.className = 'mf-message-root'
@@ -60,7 +68,7 @@ function ensureHost(): void {
 }
 
 function scheduleHostDestroy(): void {
-  // 延迟销毁，连续提示时可直接复用宿主。
+  // 延迟销毁形成短暂复用窗口，连续提示不会反复 mount/unmount。
   if (records.length > 0 || destroyTimer) return
   destroyTimer = setTimeout(() => {
     destroyTimer = null
@@ -73,6 +81,7 @@ function scheduleHostDestroy(): void {
 }
 
 function startTimer(id: string, duration: number): void {
+  // duration <= 0 表示常驻消息，例如 Promise 的 pending 阶段。
   if (duration <= 0) return
   const state: TimerState = { timer: null, remaining: duration, startedAt: Date.now() }
   state.timer = setTimeout(() => closeById(id), duration)
@@ -80,6 +89,7 @@ function startTimer(id: string, duration: number): void {
 }
 
 function closeById(id: string): void {
+  // 先移出响应式队列，再清计时器并通知调用方，关闭顺序保持稳定。
   const index = records.findIndex(item => item.id === id)
   if (index < 0) return
   const [record] = records.splice(index, 1)
@@ -113,6 +123,7 @@ function createMessage(options: MessageOptions): MessageHandler {
     return { id, close: () => {}, update: () => {} }
   }
   if (destroyTimer) {
+    // 新消息到达时取消宿主的延迟销毁，直接复用现有 App。
     clearTimeout(destroyTimer)
     destroyTimer = null
   }
@@ -135,6 +146,7 @@ function createMessage(options: MessageOptions): MessageHandler {
     id,
     close: () => closeById(id),
     update(update) {
+      // Promise 通知通过原位更新完成状态迁移，避免堆出三条独立消息。
       const current = records.find(item => item.id === id)
       if (!current) return
       if (typeof update === 'string') current.message = update
@@ -156,6 +168,7 @@ function createMessage(options: MessageOptions): MessageHandler {
 }
 
 type DurationOrOptions = number | Omit<MessageOptions, 'message' | 'type'>
+/** 兼容 duration 数字简写和完整选项对象。 */
 function normalize(message: string, type: MessageType, value?: DurationOrOptions): MessageOptions {
   return typeof value === 'number'
     ? { message, type, duration: value }
@@ -182,6 +195,7 @@ export const message = {
       error: string | ((error: unknown) => string)
     }
   ): Promise<T> {
+    // pending 常驻，任务落定后原位切换类型并启用自动关闭。
     const handler = createMessage({ message: labels.pending, type: 'info', duration: 0 })
     return task.then(
       value => {

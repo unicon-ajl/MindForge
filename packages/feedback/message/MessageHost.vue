@@ -41,7 +41,7 @@ const props = defineProps<{ items: MessageRecord[] }>()
 defineEmits<{ close: [id: string]; pause: [id: string]; resume: [id: string] }>()
 
 const closeLabel = 'Close'
-// fixed 元素会创建独立堆叠上下文，层级必须加在 Host 上。
+// fixed Host 会形成统一堆叠上下文，其层级必须覆盖当前队列中层级最高的消息。
 const hostZIndex = computed(() => Math.max(0, ...props.items.map(item => item.zIndex)))
 const icons: Record<MessageType, string> = {
   success: '✓',
@@ -53,6 +53,7 @@ const icons: Record<MessageType, string> = {
 
 <style scoped lang="scss">
 .mf-message-host {
+  // Host 不拦截页面操作，只有具体消息恢复 pointer-events。
   position: fixed;
   inset: var(--mf-message-top, 20px) 0 auto;
   pointer-events: none;
@@ -66,7 +67,7 @@ const icons: Record<MessageType, string> = {
 }
 
 .mf-message {
-  // 定位元素才能让每条消息的动态 z-index 生效。
+  // position 让每条消息的动态 z-index 生效，支持与其他浮层按创建顺序叠放。
   position: relative;
   pointer-events: auto;
   max-width: min(560px, calc(100vw - 32px));

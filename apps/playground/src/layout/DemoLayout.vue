@@ -35,6 +35,7 @@ const searchVisible = ref(false)
 const sidebarCollapsed = ref(false)
 const isMobile = ref(false)
 
+/** 根据统一断点同步移动端状态；进入移动端时默认收起侧栏避免遮挡内容。 */
 function checkMobile() {
   isMobile.value = window.innerWidth <= 768
   if (isMobile.value) {
@@ -48,12 +49,14 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  // Layout 可能在热更新或测试中卸载，必须释放 window 监听。
   window.removeEventListener('resize', checkMobile)
 })
 </script>
 
 <style scoped lang="scss">
 .demo-layout {
+  // 页面自身固定为视口高度，只允许内容区和侧栏独立滚动。
   display: flex;
   flex-direction: column;
   height: 100vh;

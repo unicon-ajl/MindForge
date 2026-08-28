@@ -1,3 +1,4 @@
+/** TypewriterMachine 行为契约：计时、暂停恢复、Unicode 和事件顺序。 */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { splitGraphemes } from './graphemes'
 import { TypewriterMachine } from './machine'

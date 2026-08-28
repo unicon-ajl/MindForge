@@ -1,4 +1,4 @@
-/** 第三方服务路由汇总 */
+/** @module ThirdPartyMockRoutes 模拟短信、对象存储凭证和 SSE 流式服务。 */
 
 import { Router } from 'express'
 import { delay } from '../../middleware/delay'
@@ -43,6 +43,7 @@ router.get('/sse/chat', (req, res) => {
 
   const input = typeof req.query.input === 'string' ? req.query.input : ''
   if (!input.trim()) {
+    // 空输入也发送完整结束序列，前端无需维护特殊的异常分支。
     sendSSE(res, null, { messageType: 'END', data: '' })
     sendSSE(res, 'end', { done: true })
     res.end()
@@ -50,7 +51,7 @@ router.get('/sse/chat', (req, res) => {
     return
   }
 
-  // 模拟流式输出
+  // 固定数量和固定间隔让流式 UI 演示可重复验证。
   let count = 0
   const timer = setInterval(() => {
     count++
@@ -66,6 +67,7 @@ router.get('/sse/chat', (req, res) => {
     }
   }, 500)
 
+  // 客户端提前断开时立即停止业务分片定时器，心跳由 openSSE 自行清理。
   req.once('close', () => clearInterval(timer))
 })
 

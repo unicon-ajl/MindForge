@@ -21,16 +21,25 @@ import type {
 defineOptions({ name: 'MfTypewriter' })
 
 interface Props {
-  /** 单段文本或文本队列。 */
+  /** 单段文本或文本队列；队列项可单独覆盖停留时间。 */
   items: TypewriterItems
+  /** 输入单个字素的间隔，单位为 ms。 */
   typingSpeed?: number
+  /** 删除单个字素的间隔，单位为 ms。 */
   deletingSpeed?: number
+  /** 输入完成后的默认停留时间，单位为 ms。 */
   hold?: number
+  /** 是否在队尾回到队首持续播放。 */
   loop?: boolean
+  /** 挂载后以及 items 更新后是否自动启动。 */
   autoplay?: boolean
+  /** 是否显示视觉光标。 */
   cursor?: boolean
+  /** 光标颜色；默认继承项目主色变量。 */
   cursorColor?: string
+  /** 光标完整闪烁周期，单位为 ms。 */
   cursorBlinkSpeed?: number
+  /** 减少动态效果策略；auto 跟随操作系统设置。 */
   reducedMotion?: ReducedMotionStrategy
 }
 
@@ -56,6 +65,7 @@ const emit = defineEmits<{
 }>()
 
 const displayText = ref('')
+// 视觉文本逐字变化过于频繁，只在单项完成时通过 aria-live 播报完整内容。
 const announcement = ref('')
 const phase = ref<TypewriterPhase>('idle')
 const prefersReducedMotion = ref(false)
@@ -103,6 +113,7 @@ watch(() => [props.typingSpeed, props.deletingSpeed, props.hold, props.loop] as 
 watch(
   () => props.items,
   items => {
+    // 新队列意味着新的播报上下文，旧公告必须先清空。
     syncOptions()
     announcement.value = ''
     machine.setItems(items, props.autoplay)
@@ -143,6 +154,7 @@ const controller: TypewriterController = {
 }
 
 onMounted(() => {
+  // matchMedia 只在客户端访问；auto 模式下持续响应系统偏好变化。
   if (typeof window !== 'undefined' && props.reducedMotion === 'auto') {
     mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     prefersReducedMotion.value = mediaQuery.matches
@@ -153,6 +165,7 @@ onMounted(() => {
 })
 
 onScopeDispose(() => {
+  // 组件销毁时同时释放媒体监听和状态机计时器。
   mediaQuery?.removeEventListener('change', handleMediaChange)
   machine.destroy()
 })
@@ -182,6 +195,7 @@ defineExpose(controller)
   }
 
   &__announcement {
+    // 保留给读屏软件，视觉上隐藏但不能使用 display: none。
     position: absolute;
     width: 1px;
     height: 1px;
@@ -205,6 +219,7 @@ defineExpose(controller)
 }
 
 @media (prefers-reduced-motion: reduce) {
+  // 即使业务强制播放文字动画，也尊重系统设置关闭纯装饰性的光标闪烁。
   .mf-typewriter__cursor {
     animation: none;
   }

@@ -56,13 +56,13 @@ import { activateFocusTrap, overlayManager, type OverlayHandle } from '@internal
 
 defineOptions({ name: 'MfModal' })
 
-/** 组件属性 */
+/** Modal 的展示、关闭方式和页面副作用配置。 */
 interface Props {
-  /** 是否显示（支持 v-model:visible） */
+  /** 是否显示，支持 v-model:visible。 */
   visible?: boolean
   /** 弹窗标题 */
   title?: string
-  /** 弹窗宽度 */
+  /** 弹窗宽度；数字按 px 处理，字符串保留 CSS 单位。 */
   width?: string | number
   /** 是否显示关闭按钮 */
   closable?: boolean
@@ -70,7 +70,7 @@ interface Props {
   maskClosable?: boolean
   /** 是否允许 ESC 关闭 */
   closeOnEscape?: boolean
-  /** 是否捕获并循环焦点 */
+  /** 是否将 Tab 焦点限制在当前栈顶弹窗内。 */
   trapFocus?: boolean
   /** 是否锁定页面滚动 */
   lockScroll?: boolean
@@ -98,6 +98,7 @@ const emit = defineEmits<{
 }>()
 
 const dialogRef = ref<HTMLElement | null>(null)
+// 每个实例使用独立标题 id，避免多个 Modal 的 aria-labelledby 冲突。
 const titleId = `mf-modal-title-${Math.random().toString(36).slice(2, 10)}`
 const closeLabel = computed(() => props.closeLabel)
 const zIndex = ref(2000)
@@ -111,6 +112,7 @@ const modalStyle = computed(() => ({
 const maskStyle = computed(() => ({ zIndex: zIndex.value }))
 
 const handleClose = () => {
+  // 组件遵循受控模式，只发送更新和语义事件，不直接改写 props。
   emit('update:visible', false)
   emit('close')
 }
@@ -123,6 +125,7 @@ const handleMaskClick = () => {
 }
 
 const openOverlay = (): void => {
+  // 注册句柄既提供统一层级，也让 ESC 只分发给当前最顶层实例。
   if (overlayHandle || typeof document === 'undefined') return
   overlayHandle = overlayManager.register({
     type: 'modal',
@@ -134,7 +137,7 @@ const openOverlay = (): void => {
 }
 
 const closeOverlay = (): void => {
-  // 按创建的反序释放副作用。
+  // 按创建的反序释放焦点、滚动锁和栈注册，且每一步都允许重复调用。
   releaseFocus?.()
   releaseFocus = null
   releaseScroll?.()
@@ -166,6 +169,7 @@ onScopeDispose(closeOverlay)
 
 <style scoped lang="scss">
 .mf-modal-mask {
+  // 遮罩 Teleport 到 body，避免被业务容器的 overflow 和层叠上下文裁切。
   position: fixed;
   top: 0;
   left: 0;
@@ -178,6 +182,7 @@ onScopeDispose(closeOverlay)
 }
 
 .mf-modal {
+  // 内容区自行滚动，弹窗整体始终限制在视口高度内。
   background: #fff;
   border-radius: var(--mf-modal-border-radius, 4px);
   box-shadow: var(--mf-shadow-light, 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04));

@@ -58,11 +58,13 @@ import { ref } from 'vue'
 import { vTooltip } from '@packages/tooltip'
 
 const shortText = '短文本'
+// 两组文本用于直观看出 overflow 模式只在真实裁切时创建 Tooltip。
 const longText = '这是一段明显超过容器宽度的文本，只有真正发生溢出时才显示完整内容。'
 const disabled = ref(false)
 const dynamicContent = ref('支持响应式更新内容')
 
 const changeContent = (): void => {
+  // 原位切换内容，用于验证指令 updated 生命周期不会重建目标元素。
   dynamicContent.value =
     dynamicContent.value === '支持响应式更新内容'
       ? '内容已经更新，无需重新绑定指令'

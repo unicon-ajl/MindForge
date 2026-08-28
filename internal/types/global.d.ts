@@ -3,6 +3,7 @@
 
 /* eslint-disable no-var */
 declare global {
+  /** 补齐部分测试/旧环境中不完整的 Clipboard 类型。 */
   interface Navigator {
     clipboard?: {
       writeText(text: string): Promise<void>
@@ -11,7 +12,7 @@ declare global {
   }
 }
 
-/* 全局插件类型扩展 */
+/* 为通过 app.config.globalProperties 注入的反馈和存储 API 提供模板类型。 */
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $message: (typeof import('../../packages/feedback'))['message']

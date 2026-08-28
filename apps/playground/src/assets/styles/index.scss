@@ -2,7 +2,7 @@
 @use './reset.scss';
 @use './theme.scss' as *;
 
-// Demo 关键说明：轻量突出，不抢正文层级。
+// Demo 关键说明采用统一信息条，强调边界但不抢夺演示主体层级。
 .demo-tip {
   position: relative;
   margin: 12px 0 0;
@@ -33,7 +33,7 @@
   }
 }
 
-// 通用工具类
+// 仅保留 Playground 布局所需的少量工具类，不作为组件库能力导出。
 .text-center {
   text-align: center;
 }

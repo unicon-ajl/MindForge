@@ -1,4 +1,4 @@
-/** Mock 服务入口 */
+/** @module MockServer 为 Playground 提供稳定、可控的本地接口。 */
 
 import express from 'express'
 import cors from 'cors'
@@ -27,7 +27,7 @@ app.use(express.static(assetsDir))
 app.use('/api', mainRoutes)
 app.use('/third-party', thirdPartyRoutes)
 
-/** 启动 */
+/** 启动 HTTP 服务，并为端口冲突和进程信号提供明确退出路径。 */
 function start(): void {
   const server = app.listen(PORT, () => {
     console.log(`\n⚡ Mock server running at http://localhost:${PORT}`)
@@ -52,6 +52,7 @@ function start(): void {
     isShuttingDown = true
     console.log('\n👋 Mock server stopped')
     server.close(() => process.exit(0))
+    // 活跃长连接可能阻止 close 回调，超时后兜底退出开发进程。
     setTimeout(() => process.exit(0), 3000)
   }
 

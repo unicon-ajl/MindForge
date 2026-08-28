@@ -41,9 +41,10 @@ const emit = defineEmits<{
   'update:modelValue': [id: string]
 }>()
 
-/** 默认展开所有分组 */
+/** 默认展开全部正式能力，项目规模较小时优先保证可发现性。 */
 const expandedGroups = ref<string[]>(sidebarConfig.map(g => g.name))
 
+/** 原位维护展开列表，避免为简单目录引入额外树状态。 */
 function toggleGroup(name: string) {
   const index = expandedGroups.value.indexOf(name)
   if (index > -1) {
@@ -60,6 +61,7 @@ function selectItem(id: string) {
 
 <style scoped lang="scss">
 .demo-sidebar {
+  // flex-shrink: 0 保证内容区变窄时侧栏不会出现非预期压缩。
   width: 220px;
   height: 100%;
   overflow-y: auto;
@@ -111,6 +113,7 @@ function selectItem(id: string) {
 }
 
 .demo-sidebar-items {
+  // 使用 max-height 提供无需 JavaScript 测量的轻量展开动画。
   list-style: none;
   margin: 0;
   padding: 0;

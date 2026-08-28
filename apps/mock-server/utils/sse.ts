@@ -2,7 +2,10 @@
 
 import type { Request, Response } from 'express'
 
-/** 建立 SSE 连接（自动心跳保活） */
+/**
+ * 建立 SSE 连接并启动注释帧心跳。
+ * 返回 close 让路由在正常结束和客户端断开两条路径中都能释放定时器。
+ */
 export function openSSE(req: Request, res: Response): { close: () => void } {
   res.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
   res.setHeader('Cache-Control', 'no-cache, no-transform')
@@ -15,7 +18,7 @@ export function openSSE(req: Request, res: Response): { close: () => void } {
   return { close }
 }
 
-/** 发送 SSE 事件 */
+/** 将任意数据序列化为单条 SSE 帧；event 为空时发送默认 message 事件。 */
 export function sendSSE(res: Response, event: string | null, data: unknown): void {
   if (event) res.write(`event: ${event}\n`)
   res.write(`data: ${JSON.stringify(data)}\n\n`)

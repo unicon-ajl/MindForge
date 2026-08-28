@@ -44,6 +44,7 @@ import { MfModal, loading, message, type LoadingInstance } from '@packages/feedb
 const firstVisible = ref(false)
 const secondVisible = ref(false)
 const targetRef = ref<HTMLElement | null>(null)
+// 保存句柄让控制按钮位于遮罩外时仍可主动关闭局部 Loading。
 const loader = ref<LoadingInstance | null>(null)
 
 const toggleLocalLoading = () => {
@@ -56,6 +57,7 @@ const toggleLocalLoading = () => {
 }
 
 const showPromiseMessage = () => {
+  // 使用同一消息句柄演示 pending 到 success 的原位状态迁移。
   void message.promise(new Promise<string>(resolve => setTimeout(() => resolve('完成'), 1000)), {
     pending: '正在执行任务',
     success: value => `任务${value}`,
@@ -63,6 +65,7 @@ const showPromiseMessage = () => {
   })
 }
 
+// Demo 被动态组件切换卸载时，不能把局部遮罩遗留在已移除的目标上。
 onScopeDispose(() => loader.value?.close())
 </script>
 

@@ -1,12 +1,11 @@
 // ============================================================
 // MindForge 主题系统 — CSS Custom Properties
-// 消费者可通过 :root 选择器覆盖变量来定制主题
+// Playground 与能力 Demo 共享的运行时变量；组件仍为关键变量提供内置回退值。
 //
 // 使用方式：
 //   1. 全局覆盖：:root { --mf-color-primary: #your-color; }
 //   2. 局部覆盖：.custom-theme { --mf-color-primary: #your-color; }
 //   3. JS 动态：document.documentElement.style.setProperty('--mf-color-primary', '#xxx')
-//   4. 预设主题：import { applyTheme } from 'mind-forge'; applyTheme('dark')
 // ============================================================
 
 :root {

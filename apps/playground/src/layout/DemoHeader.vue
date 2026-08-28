@@ -15,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+/** Header 不持有搜索状态，只向布局层发送打开意图。 */
 const emit = defineEmits<{
   openSearch: []
 }>()
@@ -22,6 +23,7 @@ const emit = defineEmits<{
 
 <style scoped lang="scss">
 .demo-header {
+  // sticky 保持全局入口可见；层级低于搜索弹层和移动端侧栏。
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -46,6 +46,7 @@ const currentItem = computed(() => currentInfo.value?.item)
 const currentGroup = computed(() => currentInfo.value?.group)
 
 const currentIndex = computed(() => allSidebarItems.findIndex(i => i.id === props.currentId))
+// 上一项和下一项遵循侧边栏展平后的顺序，导航与目录始终一致。
 const prevItem = computed(() =>
   currentIndex.value > 0 ? allSidebarItems[currentIndex.value - 1] : null
 )
@@ -63,11 +64,14 @@ function toPascalCase(str: string): string {
 
 const demoModules = import.meta.glob('../demos/**/*.vue')
 
-/** 异步加载 demo 组件 */
+/**
+ * 按配置中的目录和稳定 id 懒加载 Demo。
+ * import.meta.glob 保留构建期可分析性，同时避免首屏加载全部演示代码。
+ */
 const currentDemoComponent = computed(() => {
   const info = currentInfo.value
   if (!info) return null
-  // 遍历匹配：dir 可能嵌套（如 components/），id 转 PascalCase
+  // 同时匹配目录和文件名，避免不同分组出现同名 Demo 时加载错误。
   const name = `${toPascalCase(info.item.id)}Demo.vue`
   const entry = Object.entries(demoModules).find(
     ([key]) => key.includes(`/${info.item.dir}/`) && key.endsWith(name)

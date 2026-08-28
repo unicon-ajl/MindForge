@@ -1,3 +1,4 @@
+/** 单个演示入口；dir 同时用于动态导入路径匹配。 */
 export interface SidebarItem {
   id: string
   title: string
@@ -35,6 +36,7 @@ export const sidebarConfig: SidebarGroup[] = [
 
 export const allSidebarItems: SidebarItem[] = sidebarConfig.flatMap(group => group.items)
 
+/** 根据稳定 id 同时返回条目和所属分组，供面包屑、搜索和导航复用。 */
 export function findItemById(id: string): { item: SidebarItem; group: SidebarGroup } | null {
   for (const group of sidebarConfig) {
     const item = group.items.find(candidate => candidate.id === id)
