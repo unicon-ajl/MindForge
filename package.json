@@ -22,6 +22,11 @@
       "import": "./dist/mind-forge.es.js",
       "require": "./dist/mind-forge.cjs"
     },
+    "./tooltip": {
+      "types": "./dist/packages/tooltip/index.d.ts",
+      "import": "./dist/mind-forge.es.js",
+      "require": "./dist/mind-forge.cjs"
+    },
     "./style.css": "./dist/style.css"
   },
   "files": [
@@ -32,6 +37,7 @@
     "*.css",
     "*.scss",
     "packages/**/*.vue",
+    "packages/**/*.scss",
     "apps/playground/src/assets/styles/**/*"
   ],
   "scripts": {
@@ -102,5 +108,8 @@
     "hooks"
   ],
   "author": "ajl",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@floating-ui/dom": "^1.8.0"
+  }
 }

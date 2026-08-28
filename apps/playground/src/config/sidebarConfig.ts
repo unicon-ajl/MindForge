@@ -24,6 +24,12 @@ export const sidebarConfig: SidebarGroup[] = [
     dir: 'components',
     title: '✨ 精品组件',
     items: [{ id: 'typewriter', title: 'Typewriter 打字机', dir: 'components' }]
+  },
+  {
+    name: 'directives',
+    dir: 'directives',
+    title: '🧭 精品指令',
+    items: [{ id: 'tooltip', title: 'v-tooltip 提示', dir: 'directives' }]
   }
 ]
 

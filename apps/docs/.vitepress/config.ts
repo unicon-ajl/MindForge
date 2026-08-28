@@ -8,7 +8,8 @@ export default defineConfig({
     nav: [
       { text: '指南', link: '/guide/' },
       { text: 'Feedback', link: '/infrastructure/feedback' },
-      { text: 'Typewriter', link: '/components/typewriter' }
+      { text: 'Typewriter', link: '/components/typewriter' },
+      { text: 'Tooltip', link: '/directives/tooltip' }
     ],
     sidebar: {
       '/guide/': [{ text: '指南', items: [{ text: '快速开始', link: '/guide/' }] }],
@@ -22,6 +23,12 @@ export default defineConfig({
         {
           text: '精品组件',
           items: [{ text: 'Typewriter', link: '/components/typewriter' }]
+        }
+      ],
+      '/directives/': [
+        {
+          text: '精品指令',
+          items: [{ text: 'v-tooltip', link: '/directives/tooltip' }]
         }
       ]
     }

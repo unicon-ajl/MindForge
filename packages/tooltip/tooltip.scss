@@ -1,0 +1,59 @@
+.mf-tooltip {
+  // 浮层挂在 body 下，fixed 可避免受业务容器 overflow 和定位上下文干扰。
+  position: fixed;
+  width: max-content;
+  max-width: min(var(--mf-tooltip-max-width, 320px), calc(100vw - 16px));
+  padding: var(--mf-tooltip-padding, 7px 10px);
+  border-radius: var(--mf-tooltip-radius, 6px);
+  color: var(--mf-tooltip-color, #fff);
+  background: var(--mf-tooltip-background, rgba(31, 35, 41, 0.94));
+  box-shadow: var(--mf-tooltip-shadow, 0 4px 16px rgba(0, 0, 0, 0.18));
+  font-size: var(--mf-tooltip-font-size, 12px);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  // 初始态保留在 DOM 中完成定位，再通过 open 类触发平滑入场。
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+
+  &--open {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  &__arrow {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    color: var(--mf-tooltip-arrow-color, var(--mf-tooltip-background, rgba(31, 35, 41, 0.94)));
+
+    svg {
+      // 箭头由指令按最终方向写入 SVG 路径，颜色与主题变量保持一致。
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      fill: currentColor;
+    }
+  }
+
+  &[data-theme='light'] {
+    // 浅色主题额外增加细边框，保证白色浮层在浅色页面上仍有清晰边界。
+    --mf-tooltip-color: #303133;
+    --mf-tooltip-background: #fff;
+    --mf-tooltip-arrow-color: #fff;
+    --mf-tooltip-shadow: 0 4px 18px rgba(31, 35, 41, 0.16);
+
+    border: 1px solid rgba(31, 35, 41, 0.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  // 尊重系统减少动态效果设置，避免缩放动画引发不适。
+  .mf-tooltip {
+    transition: none;
+  }
+}

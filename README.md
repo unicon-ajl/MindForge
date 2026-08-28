@@ -8,10 +8,13 @@
 | -------------- | -------------------------------------------------------- |
 | Feedback Suite | Modal、Loading、Message 共享层级、滚动锁、ESC 和焦点管理 |
 | Typewriter     | 可控制、可循环、事件完整的打字与删除动画组件             |
+| v-tooltip      | 自动翻转、溢出判断、键盘访问和完整生命周期的提示指令     |
 
 ```ts
-import { MfModal, loading, message, MfTypewriter } from 'mind-forge'
+import { MfModal, loading, message, MfTypewriter, tooltipPlugin } from 'mind-forge'
 import 'mind-forge/style.css'
+
+app.use(tooltipPlugin)
 ```
 
 也可以按能力导入：
@@ -19,6 +22,7 @@ import 'mind-forge/style.css'
 ```ts
 import { MfModal, loading, message } from 'mind-forge/feedback'
 import { MfTypewriter } from 'mind-forge/typewriter'
+import { vTooltip } from 'mind-forge/tooltip'
 ```
 
 ## 目录
@@ -28,6 +32,7 @@ MindForge/
 ├── packages/
 │   ├── feedback/       # 反馈组件与命令式插件
 │   ├── typewriter/     # 打字机组件
+│   ├── tooltip/        # Tooltip 指令
 │   ├── catalog.ts      # 正式能力目录
 │   └── index.ts        # 唯一发布入口
 ├── internal/

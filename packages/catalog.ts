@@ -23,5 +23,12 @@ export const capabilityCatalog = [
     maturity: 'beta',
     problem: '可控制、可循环、事件完整的打字与删除动画',
     entry: 'mind-forge/typewriter'
+  },
+  {
+    id: 'tooltip',
+    name: 'Tooltip Directive',
+    maturity: 'beta',
+    problem: '文本提示的溢出判断、碰撞定位、键盘访问和生命周期管理',
+    entry: 'mind-forge/tooltip'
   }
 ] as const satisfies readonly CapabilityDefinition[]
