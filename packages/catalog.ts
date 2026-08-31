@@ -31,6 +31,13 @@ export const capabilityCatalog = [
     entry: 'mind-forge/typewriter'
   },
   {
+    id: 'prompt-suggestions',
+    name: 'Prompt Suggestions',
+    maturity: 'beta',
+    problem: '处理上下文建议的异步竞态、能力发现与无障碍选择体验',
+    entry: 'mind-forge/prompt-suggestions'
+  },
+  {
     id: 'tooltip',
     name: 'Tooltip Directive',
     maturity: 'beta',

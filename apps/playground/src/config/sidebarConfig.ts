@@ -38,6 +38,13 @@ export const sidebarConfig: SidebarGroup[] = [
     title: '精品组件',
     items: [
       {
+        id: 'prompt-suggestions',
+        title: 'Prompt Suggestions',
+        dir: 'components',
+        eyebrow: 'CONVERSATIONAL UX',
+        summary: '处理上下文建议的异步竞态、能力发现与无障碍选择体验。'
+      },
+      {
         id: 'typewriter',
         title: 'Typewriter',
         dir: 'components',
@@ -63,6 +70,9 @@ export const sidebarConfig: SidebarGroup[] = [
 ]
 
 export const allSidebarItems: SidebarItem[] = sidebarConfig.flatMap(group => group.items)
+
+/** 初始页面始终跟随目录第一项，新增或调整能力时不再维护第二份默认值。 */
+export const defaultSidebarItemId = allSidebarItems[0]?.id ?? ''
 
 /** 根据稳定 id 同时返回条目和所属分组，供面包屑、搜索和导航复用。 */
 export function findItemById(id: string): { item: SidebarItem; group: SidebarGroup } | null {

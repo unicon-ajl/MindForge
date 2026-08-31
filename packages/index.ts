@@ -2,4 +2,5 @@
 export * from './feedback'
 export * from './typewriter'
 export * from './tooltip'
+export * from './prompt-suggestions'
 export * from './catalog'

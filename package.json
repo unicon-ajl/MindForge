@@ -22,6 +22,11 @@
       "import": "./dist/mind-forge.es.js",
       "require": "./dist/mind-forge.cjs"
     },
+    "./prompt-suggestions": {
+      "types": "./dist/packages/prompt-suggestions/index.d.ts",
+      "import": "./dist/mind-forge.es.js",
+      "require": "./dist/mind-forge.cjs"
+    },
     "./tooltip": {
       "types": "./dist/packages/tooltip/index.d.ts",
       "import": "./dist/mind-forge.es.js",

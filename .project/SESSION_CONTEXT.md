@@ -34,6 +34,15 @@ apps/docs/          面向使用者的能力文档
 
 ## 3. 当前正式能力
 
+### 3.0 Prompt Suggestions · Beta
+
+- 面向 AI 对话、搜索和命令入口提供分组建议、说明、禁用态与业务 payload；
+- 支持同步列表和异步 `source(context, signal)`，上下文变化、关闭和卸载都会取消旧请求；
+- 即使数据源忽略取消，也通过请求序号阻止迟到结果覆盖新上下文；
+- 键盘方向键会跳过禁用项并循环移动，支持 Home、End、ESC 和焦点恢复；
+- 组件只发出选择事件，不绑定聊天 Store，也不决定填入、提交、导航或业务动作；
+- 使用 Floating UI 处理翻转、位移和视口安全边距，并遵循减弱动画偏好。
+
 ### 3.1 Feedback Suite · Beta
 
 由 Modal、Loading、Message 共享内部 Overlay Manager，统一处理层级和页面副作用。
@@ -129,8 +138,8 @@ apps/docs/          面向使用者的能力文档
 
 ## 8. 当前质量状态
 
-- 正式能力：3 项，均为 Beta；
-- 自动化测试：34 项；
+- 正式能力：4 项，均为 Beta；
+- 自动化测试：40 项；
 - 已验证 ESM、CommonJS、样式和类型声明构建；
 - Playground 与 VitePress 文档均可独立构建；
 - 当前已知非阻塞提示：Dart Sass legacy JS API 弃用警告，来自现有工具链调用方式。

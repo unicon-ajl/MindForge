@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-08-31 Prompt Suggestions
+
+- 新增 `mind-forge/prompt-suggestions` 子路径和 `MfPromptSuggestions`；
+- 支持同步、异步上下文建议及 AbortSignal/请求序号双重竞态保护；
+- 补齐分组、禁用、状态插槽、键盘导航、焦点恢复、浮层碰撞定位与减弱动画；
+- 同步公共类型、自动化测试、Playground、VitePress 文档、能力目录和 README。
+- 修正 Playground 能力分类，并让默认页面始终跟随目录首项，避免配置顺序与选中状态脱节。
+
+---
+
 ## 2026-08-31 精品能力体系重构
 
 ### 阶段目标

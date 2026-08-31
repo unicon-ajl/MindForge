@@ -3,7 +3,14 @@
 MindForge 只发布经过筛选的 Vue 通用能力，不提供实验入口或普通工具合集。
 
 ```ts
-import { MfModal, loading, message, MfTypewriter, tooltipPlugin } from 'mind-forge'
+import {
+  MfModal,
+  loading,
+  message,
+  MfPromptSuggestions,
+  MfTypewriter,
+  tooltipPlugin
+} from 'mind-forge'
 import 'mind-forge/style.css'
 
 app.use(tooltipPlugin)
@@ -14,6 +21,7 @@ app.use(tooltipPlugin)
 ```ts
 import { MfModal, loading, message } from 'mind-forge/feedback'
 import { MfTypewriter } from 'mind-forge/typewriter'
+import { MfPromptSuggestions } from 'mind-forge/prompt-suggestions'
 import { vTooltip } from 'mind-forge/tooltip'
 ```
 

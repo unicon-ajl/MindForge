@@ -35,8 +35,9 @@ import DemoSidebar from './DemoSidebar.vue'
 import DemoContent from './DemoContent.vue'
 import DemoSearch from './DemoSearch.vue'
 import { isCompactWidth, shouldCollapseSidebar } from './responsive'
+import { defaultSidebarItemId } from '../config/sidebarConfig'
 
-const currentId = ref('feedback')
+const currentId = ref(defaultSidebarItemId)
 const searchVisible = ref(false)
 const isCompactViewport = ref(false)
 const drawerOpen = ref(false)

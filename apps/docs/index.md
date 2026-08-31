@@ -12,6 +12,11 @@ hero:
       text: GitHub
       link: https://github.com/unicon-ajl/MindForge
 features:
+  - icon: ✨
+    title: Prompt Suggestions
+    details: 面向上下文建议的异步竞态保护、碰撞定位与完整键盘选择体验
+    link: /components/prompt-suggestions
+    linkText: 查看智能建议面板
   - icon: 💬
     title: Feedback Suite
     details: Modal、Loading、Message 共享层级、ESC、焦点与页面副作用管理

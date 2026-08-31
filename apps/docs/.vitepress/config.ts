@@ -12,6 +12,7 @@ export default defineConfig({
       { text: '指南', link: '/guide/' },
       { text: 'Feedback', link: '/infrastructure/feedback' },
       { text: 'Typewriter', link: '/components/typewriter' },
+      { text: 'Prompt Suggestions', link: '/components/prompt-suggestions' },
       { text: 'Tooltip', link: '/directives/tooltip' }
     ],
     sidebar: {
@@ -25,7 +26,10 @@ export default defineConfig({
       '/components/': [
         {
           text: '精品组件',
-          items: [{ text: 'Typewriter', link: '/components/typewriter' }]
+          items: [
+            { text: 'Prompt Suggestions', link: '/components/prompt-suggestions' },
+            { text: 'Typewriter', link: '/components/typewriter' }
+          ]
         }
       ],
       '/directives/': [
