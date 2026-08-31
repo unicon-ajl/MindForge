@@ -8,6 +8,8 @@ export interface OverlayRegistration {
   type?: OverlayType
   /** 是否加入 ESC 候选；关闭动作仍由调用方决定。 */
   closeOnEscape?: boolean
+  /** 不处理 ESC 时是否阻止事件继续寻找下层浮层；Modal 通常应开启。 */
+  blocksEscape?: boolean
   onEscape?: () => void
 }
 
@@ -17,9 +19,15 @@ export interface OverlayHandle {
   zIndex: number
   unregister: () => void
   isTopmost: () => boolean
+  /** 原位更新关闭策略，不改变既有浮层的栈顺序。 */
+  update: (
+    registration: Pick<OverlayRegistration, 'closeOnEscape' | 'blocksEscape' | 'onEscape'>
+  ) => void
 }
 
-interface OverlayEntry extends Required<Pick<OverlayRegistration, 'type' | 'closeOnEscape'>> {
+interface OverlayEntry extends Required<
+  Pick<OverlayRegistration, 'type' | 'closeOnEscape' | 'blocksEscape'>
+> {
   id: number
   zIndex: number
   onEscape?: () => void
@@ -55,13 +63,14 @@ export function createOverlayManager(baseZIndex = 2000): OverlayManager {
     typeof document === 'undefined' ? undefined : document
 
   const closeTopmost = (): boolean => {
-    // 从顶层向下找，跳过不响应 ESC 的浮层。
+    // 通知等非阻断浮层可以跳过；遇到不可关闭 Modal 时必须停止，不能误关其下层 Modal。
     for (let index = stack.length - 1; index >= 0; index--) {
       const entry = stack[index]
       if (entry.closeOnEscape && entry.onEscape) {
         entry.onEscape()
         return true
       }
+      if (entry.blocksEscape) return false
     }
     return false
   }
@@ -96,6 +105,7 @@ export function createOverlayManager(baseZIndex = 2000): OverlayManager {
       zIndex: nextZIndex(),
       type: registration.type ?? 'custom',
       closeOnEscape: registration.closeOnEscape ?? false,
+      blocksEscape: registration.blocksEscape ?? false,
       onEscape: registration.onEscape
     }
     stack.push(entry)
@@ -113,7 +123,13 @@ export function createOverlayManager(baseZIndex = 2000): OverlayManager {
         if (index >= 0) stack.splice(index, 1)
         syncListener()
       },
-      isTopmost: () => stack.at(-1)?.id === entry.id
+      isTopmost: () => stack.at(-1)?.id === entry.id,
+      update(nextRegistration) {
+        if (!active) return
+        entry.closeOnEscape = nextRegistration.closeOnEscape ?? false
+        entry.blocksEscape = nextRegistration.blocksEscape ?? false
+        entry.onEscape = nextRegistration.onEscape
+      }
     }
   }
 

@@ -29,7 +29,7 @@
 import { computed } from 'vue'
 import type { LoadingSpinnerType } from './loading'
 
-defineOptions({ name: 'MfLoadingPlugin' })
+defineOptions({ name: 'MfLoading' })
 
 /** 该组件只负责渲染；实例创建、计时和资源清理由 loading.ts 管理。 */
 const props = defineProps<{
@@ -160,6 +160,18 @@ const maskStyle = computed(() => {
   }
   50% {
     transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-loading-dot,
+  .mf-loading-circle,
+  .mf-loading-bar {
+    animation: none;
+  }
+
+  .mf-loading-dot {
+    opacity: 0.65;
   }
 }
 </style>

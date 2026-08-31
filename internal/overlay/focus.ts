@@ -9,9 +9,15 @@ const FOCUSABLE_SELECTOR = [
 
 /** 返回当前仍可参与 Tab 顺序的元素；每次按键都重新查询以支持动态内容。 */
 function getFocusable(container: HTMLElement): HTMLElement[] {
-  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-    element => !element.hasAttribute('hidden') && element.getAttribute('aria-hidden') !== 'true'
-  )
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(element => {
+    const style = window.getComputedStyle(element)
+    return (
+      !element.closest('[hidden], [inert]') &&
+      element.getAttribute('aria-hidden') !== 'true' &&
+      style.display !== 'none' &&
+      style.visibility !== 'hidden'
+    )
+  })
 }
 
 /**
@@ -38,6 +44,12 @@ export function activateFocusTrap(
     }
     const first = items[0]
     const last = items[items.length - 1]
+    if (!(document.activeElement instanceof Node) || !container.contains(document.activeElement)) {
+      // 焦点被业务脚本移出时，下一次 Tab 必须立即拉回当前栈顶 Modal。
+      event.preventDefault()
+      ;(event.shiftKey ? last : first).focus()
+      return
+    }
     // Tab 到边界时绕回，焦点始终留在浮层内。
     if (event.shiftKey && document.activeElement === first) {
       event.preventDefault()

@@ -27,8 +27,13 @@ export interface LoadingOptions {
 
 /** 单个 Loading 任务的命令式控制句柄。 */
 export interface LoadingInstance {
+  /** 请求关闭；重复调用安全，最短展示时间结束后才移除 DOM。 */
   close: () => void
+  /** 更新仍在运行的任务文案。 */
   setText: (text: string) => void
+  /** 原位更新展示信息，不重建 Vue 应用和遮罩节点。 */
+  update: (options: Pick<LoadingOptions, 'text' | 'spinner' | 'background' | 'color'>) => void
+  /** 已请求关闭或已经完成清理时返回 true。 */
   isClosed: () => boolean
 }
 
@@ -37,6 +42,8 @@ interface PositionState {
   count: number
   /** 打开前的内联 position，释放时原样恢复。 */
   position: string
+  /** 打开前的忙碌状态；局部 Loading 关闭后原样恢复。 */
+  ariaBusy: string | null
 }
 
 // 保存仍未关闭的任务，支持关闭最新实例和统一 closeAll。
@@ -49,8 +56,13 @@ function acquirePosition(target: HTMLElement): () => void {
   if (existing) existing.count++
   else {
     // 局部 Loading 需要定位上下文；关闭后恢复原样。
-    positionStates.set(target, { count: 1, position: target.style.position })
+    positionStates.set(target, {
+      count: 1,
+      position: target.style.position,
+      ariaBusy: target.getAttribute('aria-busy')
+    })
     if (getComputedStyle(target).position === 'static') target.style.position = 'relative'
+    target.setAttribute('aria-busy', 'true')
   }
   let released = false
   return () => {
@@ -61,6 +73,8 @@ function acquirePosition(target: HTMLElement): () => void {
     state.count--
     if (state.count === 0) {
       target.style.position = state.position
+      if (state.ariaBusy === null) target.removeAttribute('aria-busy')
+      else target.setAttribute('aria-busy', state.ariaBusy)
       positionStates.delete(target)
     }
   }
@@ -69,10 +83,14 @@ function acquirePosition(target: HTMLElement): () => void {
 function createLoading(options: LoadingOptions = {}): LoadingInstance {
   // SSR 中返回相同形状的空实现，让业务无需额外判断运行环境。
   if (typeof document === 'undefined') {
-    return { close: () => {}, setText: () => {}, isClosed: () => true }
+    return { close: () => {}, setText: () => {}, update: () => {}, isClosed: () => true }
   }
 
-  const { spinner = 'dots', target, delay = 0, minDuration = 300, lockScroll = true } = options
+  const { spinner = 'dots', target, lockScroll = true } = options
+  const delay = Number.isFinite(options.delay) ? Math.max(0, options.delay ?? 0) : 0
+  const minDuration = Number.isFinite(options.minDuration)
+    ? Math.max(0, options.minDuration ?? 300)
+    : 300
   const state = reactive({
     text: options.text ?? 'Loading...',
     spinner,
@@ -87,9 +105,9 @@ function createLoading(options: LoadingOptions = {}): LoadingInstance {
   let releaseScroll: (() => void) | null = null
   let releasePosition: (() => void) | null = null
   let showTimer: ReturnType<typeof setTimeout> | null = null
-  let closeTimer: ReturnType<typeof setTimeout> | null = null
   let shownAt = 0
   let shown = false
+  let closing = false
   let closed = false
 
   const removeInstance = (): void => {
@@ -133,7 +151,10 @@ function createLoading(options: LoadingOptions = {}): LoadingInstance {
 
   const close = (): void => {
     // close 允许被业务、路由销毁或 closeAll 重复调用，但只生效一次。
-    if (closed || closeTimer) return
+    if (closed || closing) return
+    closing = true
+    // 已请求关闭的任务立即退出控制栈；DOM 可因 minDuration 暂时保留，但不应阻塞后续 close。
+    removeInstance()
     if (showTimer) {
       // 延迟期间完成的快速任务不应产生一闪而过的遮罩。
       clearTimeout(showTimer)
@@ -147,16 +168,23 @@ function createLoading(options: LoadingOptions = {}): LoadingInstance {
     }
     const remaining = Math.max(0, minDuration - (Date.now() - shownAt))
     // 保证最短展示时间，避免界面闪烁。
-    if (remaining > 0) closeTimer = setTimeout(finalize, remaining)
+    if (remaining > 0) setTimeout(finalize, remaining)
     else finalize()
   }
 
   const instance: LoadingInstance = {
     close,
     setText: text => {
-      if (!closed) state.text = text
+      if (!closed && !closing) state.text = text
     },
-    isClosed: () => closed
+    update: next => {
+      if (closed || closing) return
+      if (next.text !== undefined) state.text = next.text
+      if (next.spinner !== undefined) state.spinner = next.spinner
+      if (next.background !== undefined) state.background = next.background
+      if (next.color !== undefined) state.color = next.color
+    },
+    isClosed: () => closing || closed
   }
   instances.push(instance)
 
@@ -174,5 +202,3 @@ export const loading = {
     return instances.length
   }
 }
-
-export type LoadingExporter = typeof loading

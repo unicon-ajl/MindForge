@@ -3,13 +3,18 @@
     <div class="demo-block">
       <h4>嵌套浮层与最顶层 ESC</h4>
       <button class="demo-button" @click="firstVisible = true">打开第一层 Modal</button>
-      <p class="demo-tip">打开第二层后按 ESC，只会关闭第二层；body 在最后一层关闭后才恢复滚动。</p>
+      <p class="demo-tip">
+        第二层不显示关闭按钮，但仍可用 ESC 或遮罩关闭；顶层禁止 ESC 时不会误关下层。
+      </p>
     </div>
 
     <div class="demo-block">
       <h4>任务型通知</h4>
       <button class="demo-button" @click="showPromiseMessage">运行 Promise 通知</button>
-      <p class="demo-tip">同一条消息原位展示 pending、success 或 error，避免重复堆叠通知。</p>
+      <p class="demo-tip">
+        pending 期间就可悬停或聚焦；切换到 success/error
+        后会继承暂停状态，两种交互都离开才恢复倒计时。
+      </p>
     </div>
 
     <div class="demo-block demo-block--wide">
@@ -17,7 +22,10 @@
       <button class="demo-button" @click="toggleLocalLoading">
         {{ loader ? '关闭' : '打开' }}局部 Loading
       </button>
-      <p class="demo-tip">控制按钮位于目标容器外，遮罩显示后仍可主动关闭。</p>
+      <button v-if="loader" class="demo-button demo-button--secondary" @click="updateLocalLoading">
+        更新任务状态
+      </button>
+      <p class="demo-tip">遮罩会同步目标容器的 aria-busy，并支持原位更新文案和动画类型。</p>
     </div>
 
     <div ref="targetRef" class="loading-target">
@@ -29,7 +37,7 @@
       <p>第一层保持打开，滚动锁不会被内层提前释放。</p>
       <button class="demo-button" @click="secondVisible = true">打开第二层</button>
     </MfModal>
-    <MfModal v-model:visible="secondVisible" title="第二层">
+    <MfModal v-model:visible="secondVisible" title="第二层" :closable="false">
       <p>当前只有这一层响应 ESC 和遮罩点击。</p>
     </MfModal>
   </div>
@@ -52,6 +60,10 @@ const toggleLocalLoading = () => {
   } else if (targetRef.value) {
     loader.value = loading.open({ target: targetRef.value, text: '局部处理中', lockScroll: true })
   }
+}
+
+const updateLocalLoading = () => {
+  loader.value?.update({ text: '正在完成最后一步', spinner: 'circle' })
 }
 
 const showPromiseMessage = () => {
@@ -93,5 +105,12 @@ onScopeDispose(() => loader.value?.close())
   color: #fff;
   background: var(--mf-color-primary);
   cursor: pointer;
+}
+.demo-button + .demo-button {
+  margin-left: 8px;
+}
+.demo-button--secondary {
+  color: var(--mf-color-primary);
+  background: rgba(64, 158, 255, 0.1);
 }
 </style>

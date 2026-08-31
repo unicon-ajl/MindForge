@@ -18,8 +18,8 @@
           :style="modalStyle"
           role="dialog"
           aria-modal="true"
-          :aria-labelledby="$slots.header ? undefined : titleId"
-          :aria-label="$slots.header ? props.title || undefined : undefined"
+          :aria-labelledby="dialogLabelledBy"
+          :aria-label="dialogLabel || undefined"
           tabindex="-1"
           @mousedown.stop
         >
@@ -51,7 +51,7 @@
 
 /** @module Modal 基于 Overlay Manager 的可访问模态对话框。 */
 <script setup lang="ts">
-import { computed, onScopeDispose, ref, watch } from 'vue'
+import { computed, onScopeDispose, ref, useSlots, watch } from 'vue'
 import { activateFocusTrap, overlayManager, type OverlayHandle } from '@internal/overlay'
 
 defineOptions({ name: 'MfModal' })
@@ -76,6 +76,8 @@ interface Props {
   lockScroll?: boolean
   /** 关闭按钮的无障碍文案 */
   closeLabel?: string
+  /** 对话框的无障碍名称；使用自定义标题插槽时建议显式传入。 */
+  ariaLabel?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -97,10 +99,16 @@ const emit = defineEmits<{
   close: []
 }>()
 
+const slots = useSlots()
 const dialogRef = ref<HTMLElement | null>(null)
 // 每个实例使用独立标题 id，避免多个 Modal 的 aria-labelledby 冲突。
 const titleId = `mf-modal-title-${Math.random().toString(36).slice(2, 10)}`
 const closeLabel = computed(() => props.closeLabel)
+// 默认标题通过 aria-labelledby 关联；自定义标题无法安全注入 id，改用显式名称或 title。
+const dialogLabel = computed(() => props.ariaLabel || (slots.header ? props.title : ''))
+const dialogLabelledBy = computed(() =>
+  !slots.header && props.title && !props.ariaLabel ? titleId : undefined
+)
 const zIndex = ref(2000)
 let overlayHandle: OverlayHandle | null = null
 let releaseScroll: (() => void) | null = null
@@ -129,42 +137,82 @@ const openOverlay = (): void => {
   if (overlayHandle || typeof document === 'undefined') return
   overlayHandle = overlayManager.register({
     type: 'modal',
-    closeOnEscape: props.closable && props.closeOnEscape,
+    closeOnEscape: props.closeOnEscape,
+    blocksEscape: true,
     onEscape: handleClose
   })
   zIndex.value = overlayHandle.zIndex
-  if (props.lockScroll) releaseScroll = overlayManager.lockScroll()
+  if (props.lockScroll && !releaseScroll) releaseScroll = overlayManager.lockScroll()
 }
 
-const closeOverlay = (): void => {
-  // 按创建的反序释放焦点、滚动锁和栈注册，且每一步都允许重复调用。
-  releaseFocus?.()
-  releaseFocus = null
-  releaseScroll?.()
-  releaseScroll = null
+/** 关闭开始时先退出交互栈，退场中的 Modal 不再接收 ESC。 */
+const deactivateOverlay = (): void => {
   overlayHandle?.unregister()
   overlayHandle = null
 }
 
+/** 遮罩完全退场后再恢复页面状态，避免背景在动画期间提前滚动或获得焦点。 */
+const releaseEffects = (): void => {
+  releaseFocus?.()
+  releaseFocus = null
+  releaseScroll?.()
+  releaseScroll = null
+}
+
+const disposeOverlay = (): void => {
+  deactivateOverlay()
+  releaseEffects()
+}
+
 const handleAfterEnter = (): void => {
   // 动画结束后再聚焦，避免聚焦尚未稳定的节点。
-  if (props.trapFocus && dialogRef.value && overlayHandle) {
+  if (props.trapFocus && dialogRef.value && overlayHandle && !releaseFocus) {
     releaseFocus = activateFocusTrap(dialogRef.value, () => overlayHandle?.isTopmost() ?? false)
   }
 }
 
-const handleAfterLeave = (): void => closeOverlay()
+const handleAfterLeave = (): void => releaseEffects()
 
 watch(
   () => props.visible,
   visible => {
     if (visible) openOverlay()
-    else closeOverlay()
+    else deactivateOverlay()
   },
   { immediate: true }
 )
 
-onScopeDispose(closeOverlay)
+watch(
+  () => props.closeOnEscape,
+  closeOnEscape =>
+    overlayHandle?.update({ closeOnEscape, blocksEscape: true, onEscape: handleClose })
+)
+
+watch(
+  () => props.lockScroll,
+  lockScroll => {
+    if (!props.visible) return
+    if (lockScroll && !releaseScroll) releaseScroll = overlayManager.lockScroll()
+    else if (!lockScroll && releaseScroll) {
+      releaseScroll()
+      releaseScroll = null
+    }
+  }
+)
+
+watch(
+  () => props.trapFocus,
+  trapFocus => {
+    if (!props.visible || !dialogRef.value) return
+    if (trapFocus && !releaseFocus && overlayHandle) handleAfterEnter()
+    else if (!trapFocus && releaseFocus) {
+      releaseFocus()
+      releaseFocus = null
+    }
+  }
+)
+
+onScopeDispose(disposeOverlay)
 </script>
 
 <style scoped lang="scss">
@@ -187,8 +235,10 @@ onScopeDispose(closeOverlay)
   border-radius: var(--mf-modal-border-radius, 4px);
   box-shadow: var(--mf-shadow-light, 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04));
   max-height: 90vh;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
   overflow: auto;
-  min-width: var(--mf-modal-min-width, 520px);
+  min-width: min(var(--mf-modal-min-width, 520px), calc(100vw - 32px));
 
   &-header {
     padding: var(--mf-spacing-lg, 18px) var(--mf-spacing-lg, 18px) var(--mf-spacing-sm, 8px);
@@ -203,15 +253,28 @@ onScopeDispose(closeOverlay)
   }
 
   &-close {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
     background: none;
     border: none;
+    border-radius: 6px;
     font-size: 24px;
     cursor: pointer;
     color: var(--mf-color-info, #909399);
     line-height: 1;
 
     &:hover {
-      opacity: 0.7;
+      color: var(--mf-color-text-primary, #303133);
+      background: var(--mf-bg-color-base, #f5f7fa);
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(64, 158, 255, 0.4);
+      outline-offset: 2px;
     }
   }
 
@@ -235,16 +298,10 @@ onScopeDispose(closeOverlay)
   opacity: 0;
 }
 
-.mf-modal-zoom-enter-active,
-.mf-modal-zoom-leave-active {
-  transition:
-    transform 0.3s,
-    opacity 0.3s;
-}
-
-.mf-modal-zoom-enter-from,
-.mf-modal-zoom-leave-to {
-  transform: scale(0.9);
-  opacity: 0;
+@media (prefers-reduced-motion: reduce) {
+  .mf-modal-fade-enter-active,
+  .mf-modal-fade-leave-active {
+    transition: none;
+  }
 }
 </style>

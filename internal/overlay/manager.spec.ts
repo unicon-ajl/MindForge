@@ -27,6 +27,33 @@ describe('createOverlayManager', () => {
     expect(firstClose).toHaveBeenCalledOnce()
   })
 
+  it('allows non-blocking overlays to pass ESC but never skips a blocking Modal', () => {
+    const manager = createOverlayManager()
+    const lowerClose = vi.fn()
+    manager.register({
+      type: 'modal',
+      closeOnEscape: true,
+      blocksEscape: true,
+      onEscape: lowerClose
+    })
+    manager.register({ type: 'notification' })
+
+    expect(manager.closeTopmost()).toBe(true)
+    expect(lowerClose).toHaveBeenCalledOnce()
+
+    const topModal = manager.register({
+      type: 'modal',
+      closeOnEscape: false,
+      blocksEscape: true
+    })
+    expect(manager.closeTopmost()).toBe(false)
+    expect(lowerClose).toHaveBeenCalledOnce()
+
+    topModal.update({ closeOnEscape: true, blocksEscape: true, onEscape: lowerClose })
+    expect(manager.closeTopmost()).toBe(true)
+    expect(lowerClose).toHaveBeenCalledTimes(2)
+  })
+
   it('makes unregister idempotent', () => {
     const manager = createOverlayManager()
     const handle = manager.register()

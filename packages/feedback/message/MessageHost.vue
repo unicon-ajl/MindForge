@@ -1,19 +1,17 @@
 <template>
-  <div
-    class="mf-message-host"
-    :style="{ zIndex: hostZIndex }"
-    aria-live="polite"
-    aria-relevant="additions removals"
-  >
+  <div class="mf-message-host" :style="{ zIndex: hostZIndex }">
     <TransitionGroup name="mf-message-list" tag="div" class="mf-message-list">
       <div
         v-for="item in items"
         :key="item.id"
         :class="['mf-message', `mf-message--${item.type}`]"
         :style="{ zIndex: item.zIndex }"
-        role="status"
+        :role="item.type === 'error' ? 'alert' : 'status'"
+        aria-atomic="true"
         @mouseenter="$emit('pause', item.id)"
         @mouseleave="$emit('resume', item.id)"
+        @focusin="$emit('pause', item.id)"
+        @focusout="$emit('resume', item.id)"
       >
         <span class="mf-message__icon" aria-hidden="true">{{ icons[item.type] }}</span>
         <span class="mf-message__content">{{ item.message }}</span>
@@ -21,7 +19,7 @@
           v-if="item.closable"
           type="button"
           class="mf-message__close"
-          :aria-label="closeLabel"
+          :aria-label="item.closeLabel"
           @click="$emit('close', item.id)"
         >
           &times;
@@ -40,7 +38,6 @@ defineOptions({ name: 'MfMessageHost' })
 const props = defineProps<{ items: MessageRecord[] }>()
 defineEmits<{ close: [id: string]; pause: [id: string]; resume: [id: string] }>()
 
-const closeLabel = 'Close'
 // fixed Host 会形成统一堆叠上下文，其层级必须覆盖当前队列中层级最高的消息。
 const hostZIndex = computed(() => Math.max(0, ...props.items.map(item => item.zIndex)))
 const icons: Record<MessageType, string> = {
@@ -120,5 +117,13 @@ const icons: Record<MessageType, string> = {
 .mf-message-list-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-message-list-enter-active,
+  .mf-message-list-leave-active,
+  .mf-message-list-move {
+    transition: none;
+  }
 }
 </style>
