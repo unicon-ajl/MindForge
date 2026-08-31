@@ -1,7 +1,5 @@
 <template>
   <div>
-    <p class="demo-desc">轻量 API，完整处理自动翻转、边界避让、键盘访问和生命周期。</p>
-
     <section class="demo-block">
       <h4>基础使用</h4>
       <button v-tooltip="'这是一条安全的纯文本提示'" class="demo-button">悬停或聚焦</button>
@@ -73,10 +71,6 @@ const changeContent = (): void => {
 </script>
 
 <style scoped lang="scss">
-.demo-desc {
-  color: var(--mf-color-text-secondary);
-  font-size: 13px;
-}
 .demo-block {
   margin-bottom: 20px;
   padding: 20px;

@@ -1,7 +1,5 @@
 <template>
   <div>
-    <p class="demo-desc">Modal、Loading、Message 共享同一套层级与资源管理基础设施。</p>
-
     <div class="demo-block">
       <h4>嵌套浮层与最顶层 ESC</h4>
       <button class="demo-button" @click="firstVisible = true">打开第一层 Modal</button>
@@ -14,7 +12,7 @@
       <p class="demo-tip">同一条消息原位展示 pending、success 或 error，避免重复堆叠通知。</p>
     </div>
 
-    <div class="demo-block">
+    <div class="demo-block demo-block--wide">
       <h4>局部 Loading</h4>
       <button class="demo-button" @click="toggleLocalLoading">
         {{ loader ? '关闭' : '打开' }}局部 Loading
@@ -70,10 +68,6 @@ onScopeDispose(() => loader.value?.close())
 </script>
 
 <style scoped lang="scss">
-.demo-desc {
-  color: var(--mf-color-text-secondary);
-  font-size: 13px;
-}
 .demo-block,
 .loading-target {
   margin-bottom: 20px;

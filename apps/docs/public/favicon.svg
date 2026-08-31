@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="background" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#28364d" />
+      <stop offset="1" stop-color="#111827" />
+    </linearGradient>
+    <linearGradient id="lightning" x1="38" y1="9" x2="25" y2="55" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd35a" />
+      <stop offset="1" stop-color="#ff9f0a" />
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="15" fill="url(#background)" />
+  <path
+    d="M36.2 8 15 35.3h13.1L24.8 56 49 27.2H35.8L36.2 8Z"
+    fill="url(#lightning)"
+    stroke="#fff3c4"
+    stroke-width="1.4"
+    stroke-linejoin="round"
+  />
+</svg>

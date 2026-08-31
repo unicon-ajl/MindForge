@@ -2,9 +2,12 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: 'MindForge',
-  description: '面向 Vue 3 的精品通用能力集合',
+  description: '只沉淀高价值、可复用成品能力的 Vue 精品能力实验室',
+  // 使用 SVG 保证浏览器标签页和高分屏下都保持清晰。
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }]],
   themeConfig: {
     search: { provider: 'local' },
+    socialLinks: [{ icon: 'github', link: 'https://github.com/unicon-ajl/MindForge' }],
     nav: [
       { text: '指南', link: '/guide/' },
       { text: 'Feedback', link: '/infrastructure/feedback' },

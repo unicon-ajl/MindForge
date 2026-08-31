@@ -1,7 +1,5 @@
 <template>
   <div>
-    <p class="demo-desc">Unicode 安全的文本队列状态机，支持暂停、继续、跳过和减弱动画。</p>
-
     <section class="demo-block">
       <h4>基础与 Unicode</h4>
       <div class="demo-stage">
@@ -91,11 +89,6 @@ const lastEvent = ref('等待事件')
 </script>
 
 <style scoped lang="scss">
-.demo-desc {
-  color: var(--mf-color-text-secondary);
-  font-size: 13px;
-}
-
 .demo-block {
   margin-bottom: 20px;
   padding: 20px;

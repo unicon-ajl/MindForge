@@ -2,23 +2,29 @@
 layout: home
 hero:
   name: MindForge
-  text: Vue3 通用组件库
-  tagline: 一套面向 Vue3 的高质量通用组件、Hooks、工具集
+  text: Vue 精品能力实验室
+  tagline: 不追求数量，只沉淀能解决真实边界问题、值得跨项目复用的成品能力
   actions:
     - theme: brand
       text: 快速开始
       link: /guide/
     - theme: alt
       text: GitHub
-      link: https://github.com/
+      link: https://github.com/unicon-ajl/MindForge
 features:
-  - icon: 📦
-    title: 组件丰富
-    details: 提供常用的业务组件，开箱即用
-  - icon: 🎯
-    title: TypeScript
-    details: 完整的类型支持，完美契合 TypeScript 项目
-  - icon: 🎨
-    title: 主题定制
-    details: CSS 变量驱动，轻松定制主题
+  - icon: 💬
+    title: Feedback Suite
+    details: Modal、Loading、Message 共享层级、ESC、焦点与页面副作用管理
+    link: /infrastructure/feedback
+    linkText: 查看反馈体系
+  - icon: ⌨️
+    title: Typewriter
+    details: Unicode 安全的文本队列状态机，支持暂停、继续、跳过和减弱动画
+    link: /components/typewriter
+    linkText: 查看打字机组件
+  - icon: 🧭
+    title: v-tooltip
+    details: 覆盖溢出判断、碰撞定位、主题切换、ESC 关闭和键盘访问
+    link: /directives/tooltip
+    linkText: 查看提示指令
 ---

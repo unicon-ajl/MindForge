@@ -7,6 +7,15 @@
       <span class="demo-breadcrumb-current">{{ currentItem?.title ?? '' }}</span>
     </div>
 
+    <header v-if="currentItem" class="demo-page-hero">
+      <div>
+        <span class="demo-page-eyebrow">{{ currentItem.eyebrow }}</span>
+        <h2>{{ currentItem.title }}</h2>
+        <p>{{ currentItem.summary }}</p>
+      </div>
+      <span class="demo-page-status">Beta</span>
+    </header>
+
     <!-- Demo 内容 -->
     <div class="demo-content-body">
       <component :is="currentDemoComponent" v-if="currentDemoComponent" />
@@ -84,16 +93,63 @@ const currentDemoComponent = computed(() => {
 .demo-content {
   flex: 1;
   overflow-y: auto;
-  padding: 28px 32px;
+  padding: 30px 34px 50px;
   min-width: 0;
+}
+
+.demo-content > * {
+  width: min(100%, 1120px);
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .demo-breadcrumb {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
   font-size: 13px;
+}
+
+.demo-page-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+
+  h2 {
+    margin: 7px 0 8px;
+    color: var(--mf-color-text-primary);
+    font-size: clamp(24px, 3vw, 30px);
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+  }
+
+  p {
+    max-width: 680px;
+    margin: 0;
+    color: var(--mf-color-text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+}
+
+.demo-page-eyebrow {
+  color: var(--mf-color-primary);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.demo-page-status {
+  padding: 4px 9px;
+  border: 1px solid rgba(64, 158, 255, 0.28);
+  border-radius: var(--mf-border-radius-round);
+  color: var(--mf-color-primary);
+  background: rgba(64, 158, 255, 0.07);
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .demo-breadcrumb-group {
@@ -111,6 +167,29 @@ const currentDemoComponent = computed(() => {
 
 .demo-content-body {
   min-height: 300px;
+
+  // Demo 根节点统一切换为卡片网格，各能力只维护自身内容样式。
+  :deep(> div) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  :deep(.demo-block) {
+    margin: 0;
+    border: 1px solid var(--mf-border-color-extra-light);
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.035);
+  }
+
+  :deep(.demo-block--wide) {
+    grid-column: 1 / -1;
+  }
+
+  :deep(.loading-target) {
+    grid-column: 1 / -1;
+    margin: 0;
+    border: 1px solid var(--mf-border-color-extra-light);
+  }
 }
 
 .demo-content-nav {
@@ -143,7 +222,21 @@ const currentDemoComponent = computed(() => {
 
 @media (max-width: 768px) {
   .demo-content {
-    padding: 16px;
+    padding: 22px 18px 38px;
+  }
+
+  .demo-page-status {
+    display: none;
+  }
+
+  .demo-content-body :deep(> div) {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1180px) {
+  .demo-content-body :deep(> div) {
+    grid-template-columns: 1fr;
   }
 }
 </style>
