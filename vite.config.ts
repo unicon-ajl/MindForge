@@ -65,15 +65,6 @@ export default defineConfig(({ command, mode }) => {
           emptyOutDir: true,
           sourcemap: isDev
         },
-    server: {
-      proxy: {
-        // Playground 使用相对 /api，开发时代理到独立 Mock Server。
-        '/api': {
-          target: 'http://localhost:3001',
-          changeOrigin: true
-        }
-      }
-    },
     test: {
       globals: true,
       environment: 'node',

@@ -40,8 +40,7 @@ MindForge/
 │   └── types/          # 工程内部类型
 └── apps/
     ├── playground/     # 交互演示
-    ├── docs/           # 文档站
-    └── mock-server/    # 本地 Mock 服务
+    └── docs/           # 文档站
 ```
 
 项目不设置实验区。未达到准入标准的能力不会进入仓库。
