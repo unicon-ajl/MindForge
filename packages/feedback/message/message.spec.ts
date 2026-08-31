@@ -104,8 +104,23 @@ describe('message', () => {
   })
 
   it('uses assertive semantics for errors', async () => {
-    message.error('提交失败', 0)
+    message.error('提交失败', { description: '请检查网络', duration: 0 })
     await nextTick()
     expect(document.querySelector('.mf-message')?.getAttribute('role')).toBe('alert')
+    expect(document.querySelector('.mf-message__description')?.textContent).toBe('请检查网络')
+  })
+
+  it('renders a spinner and rich copy during Promise pending', async () => {
+    const task = new Promise<string>(() => {})
+    void message.promise(task, {
+      pending: { message: '正在上传', description: '请稍候…' },
+      success: '上传成功',
+      error: '上传失败'
+    })
+    await nextTick()
+
+    expect(document.querySelector('.mf-message__spinner')).not.toBeNull()
+    expect(document.querySelector('.mf-message__title')?.textContent).toBe('正在上传')
+    expect(document.querySelector('.mf-message__description')?.textContent).toBe('请稍候…')
   })
 })

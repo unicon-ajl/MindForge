@@ -9,11 +9,23 @@
     </div>
 
     <div class="demo-block">
-      <h4>任务型通知</h4>
-      <button class="demo-button" @click="showPromiseMessage">运行 Promise 通知</button>
+      <h4>完整通知状态</h4>
+      <div class="demo-actions">
+        <button class="demo-button" @click="showMessage('info')">提示</button>
+        <button class="demo-button demo-button--success" @click="showMessage('success')">
+          成功
+        </button>
+        <button class="demo-button demo-button--warning" @click="showMessage('warning')">
+          警告
+        </button>
+        <button class="demo-button demo-button--danger" @click="showMessage('error')">错误</button>
+        <button class="demo-button demo-button--secondary" @click="showPromiseMessage">
+          Promise 生命周期
+        </button>
+      </div>
       <p class="demo-tip">
-        pending 期间就可悬停或聚焦；切换到 success/error
-        后会继承暂停状态，两种交互都离开才恢复倒计时。
+        状态色只用于图标与侧边标识；主文案说明结果，辅助文案补充下一步。Promise
+        会在同一位置完成状态迁移。
       </p>
     </div>
 
@@ -45,7 +57,13 @@
 
 <script setup lang="ts">
 import { onScopeDispose, ref } from 'vue'
-import { MfModal, loading, message, type LoadingInstance } from '@packages/feedback'
+import {
+  MfModal,
+  loading,
+  message,
+  type LoadingInstance,
+  type MessageType
+} from '@packages/feedback'
 
 const firstVisible = ref(false)
 const secondVisible = ref(false)
@@ -69,11 +87,20 @@ const updateLocalLoading = () => {
 const showPromiseMessage = () => {
   // 使用同一消息句柄演示 pending 到 success 的原位状态迁移。
   void message.promise(new Promise<string>(resolve => setTimeout(() => resolve('完成'), 1000)), {
-    pending: '正在执行任务',
-    success: value => `任务${value}`,
-    error: '任务失败'
+    pending: { message: '正在执行任务', description: '请稍候…' },
+    success: value => ({ message: `任务${value}`, description: '结果已保存' }),
+    error: { message: '任务失败', description: '请检查网络后重试' }
   })
 }
+
+const messageContent: Record<MessageType, { message: string; description: string }> = {
+  info: { message: '提示信息', description: '配置已保存，将在下次启动时生效' },
+  success: { message: '操作成功', description: '数据已经同步到云端' },
+  warning: { message: '需要注意', description: '当前网络不稳定，部分内容可能延迟' },
+  error: { message: '提交失败', description: '服务暂时不可用，请稍后重试' }
+}
+
+const showMessage = (type: MessageType) => message.open({ ...messageContent[type], type })
 
 // Demo 被动态组件切换卸载时，不能把局部遮罩遗留在已移除的目标上。
 onScopeDispose(() => loader.value?.close())
@@ -107,7 +134,21 @@ onScopeDispose(() => loader.value?.close())
   cursor: pointer;
 }
 .demo-button + .demo-button {
-  margin-left: 8px;
+  margin-left: 0;
+}
+.demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.demo-button--success {
+  background: var(--mf-color-success);
+}
+.demo-button--warning {
+  background: var(--mf-color-warning);
+}
+.demo-button--danger {
+  background: var(--mf-color-danger);
 }
 .demo-button--secondary {
   color: var(--mf-color-primary);

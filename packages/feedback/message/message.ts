@@ -7,9 +7,14 @@ export type MessageType = 'success' | 'warning' | 'error' | 'info'
 
 /** 创建通知时的内容、时长和交互策略。 */
 export interface MessageOptions {
-  /** 通知正文，按纯文本渲染。 */
+  /** 通知主文案，按纯文本渲染。 */
   message: string
+  /** 补充上下文；信息不完整时省略，不用空文案占位。 */
+  description?: string
+  /** 通知语义；默认 `info`，错误类型使用更强的无障碍播报。 */
   type?: MessageType
+  /** 是否展示进行中图标；Promise 的 pending 阶段默认开启。 */
+  loading?: boolean
   /** 自动关闭时间，单位为 ms；0 表示持续显示。 */
   duration?: number
   /** 是否展示主动关闭按钮。 */
@@ -26,7 +31,9 @@ export interface MessageOptions {
 export interface MessageRecord {
   id: string
   message: string
+  description?: string
   type: MessageType
+  loading: boolean
   closable: boolean
   closeLabel: string
   pauseOnHover: boolean
@@ -35,8 +42,11 @@ export interface MessageRecord {
 }
 
 export interface MessageHandler {
+  /** 当前通知的唯一标识，可交给 `message.close` 使用。 */
   id: string
+  /** 立即关闭当前通知。 */
   close: () => void
+  /** 原位修改文案、状态和剩余计时策略。 */
   update: (options: string | Partial<MessageOptions>) => void
 }
 
@@ -172,7 +182,9 @@ function createMessage(options: MessageOptions): MessageHandler {
   const record: MessageRecord = {
     id,
     message: options.message,
+    description: options.description,
     type: options.type ?? 'info',
+    loading: options.loading ?? false,
     closable: options.closable ?? true,
     closeLabel: options.closeLabel ?? config.closeLabel,
     pauseOnHover: options.pauseOnHover ?? true,
@@ -194,7 +206,9 @@ function createMessage(options: MessageOptions): MessageHandler {
       if (typeof update === 'string') current.message = update
       else {
         if (update.message !== undefined) current.message = update.message
+        if (update.description !== undefined) current.description = update.description
         if (update.type !== undefined) current.type = update.type
+        if (update.loading !== undefined) current.loading = update.loading
         if (update.closable !== undefined) current.closable = update.closable
         if (update.closeLabel !== undefined) current.closeLabel = update.closeLabel
         if (update.pauseOnHover !== undefined) {
@@ -252,30 +266,47 @@ export const message = {
   promise<T>(
     task: Promise<T>,
     labels: {
-      pending: string
-      success: string | ((value: T) => string)
-      error: string | ((error: unknown) => string)
+      pending: MessageLabel
+      success: MessageLabel | ((value: T) => MessageLabel)
+      error: MessageLabel | ((error: unknown) => MessageLabel)
     }
   ): Promise<T> {
     // pending 常驻，任务落定后原位切换类型并启用自动关闭。
-    const handler = createMessage({ message: labels.pending, type: 'info', duration: 0 })
+    const handler = createMessage({
+      ...normalizeLabel(labels.pending),
+      type: 'info',
+      loading: true,
+      duration: 0
+    })
     return task.then(
       value => {
+        const success =
+          typeof labels.success === 'function' ? labels.success(value) : labels.success
         handler.update({
-          message: typeof labels.success === 'function' ? labels.success(value) : labels.success,
+          ...normalizeLabel(success),
           type: 'success',
+          loading: false,
           duration: 2000
         })
         return value
       },
       error => {
+        const failure = typeof labels.error === 'function' ? labels.error(error) : labels.error
         handler.update({
-          message: typeof labels.error === 'function' ? labels.error(error) : labels.error,
+          ...normalizeLabel(failure),
           type: 'error',
+          loading: false,
           duration: 3000
         })
         throw error
       }
     )
   }
+}
+
+/** Promise 各阶段既可只传主文案，也可补充一行上下文。 */
+export type MessageLabel = string | Pick<MessageOptions, 'message' | 'description'>
+
+function normalizeLabel(label: MessageLabel): Pick<MessageOptions, 'message' | 'description'> {
+  return typeof label === 'string' ? { message: label } : label
 }
