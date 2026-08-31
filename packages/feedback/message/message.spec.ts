@@ -110,6 +110,20 @@ describe('message', () => {
     expect(document.querySelector('.mf-message__description')?.textContent).toBe('请检查网络')
   })
 
+  it('keeps the host layer while the last notification is leaving', async () => {
+    const notice = message.info('即将关闭', 0)
+    await nextTick()
+    const host = document.querySelector<HTMLElement>('.mf-message-host')
+    const activeZIndex = host?.style.zIndex
+
+    notice.close()
+    await nextTick()
+
+    // TransitionGroup 的退场节点尚未移除，此时层级不能先降为 0。
+    expect(activeZIndex).not.toBe('0')
+    expect(host?.style.zIndex).toBe(activeZIndex)
+  })
+
   it('renders a spinner and rich copy during Promise pending', async () => {
     const task = new Promise<string>(() => {})
     void message.promise(task, {

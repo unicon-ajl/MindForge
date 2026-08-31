@@ -59,15 +59,20 @@
 
 /** @module MessageHost 集中渲染消息，并提供无障碍播报。 */
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, watchEffect } from 'vue'
 import type { MessageRecord } from './message'
 
 defineOptions({ name: 'MfMessageHost' })
 const props = defineProps<{ items: MessageRecord[] }>()
 defineEmits<{ close: [id: string]; pause: [id: string]; resume: [id: string] }>()
 
-// fixed Host 会形成统一堆叠上下文，其层级必须覆盖当前队列中层级最高的消息。
-const hostZIndex = computed(() => Math.max(0, ...props.items.map(item => item.zIndex)))
+// 退场元素会比响应式队列多存活一个动画周期，因此宿主必须保留最后一次有效层级。
+// 如果队列清空时立刻降为 0，仍在退场的通知会被固定 Header 等页面元素覆盖。
+const hostZIndex = ref(0)
+watchEffect(() => {
+  const activeZIndex = Math.max(0, ...props.items.map(item => item.zIndex))
+  if (activeZIndex > 0) hostZIndex.value = activeZIndex
+})
 </script>
 
 <style scoped lang="scss">
