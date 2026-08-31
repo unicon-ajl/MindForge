@@ -1,6 +1,49 @@
 # MindForge 开发日志
 
-> 最后更新：2026-07-13
+> 最后更新：2026-08-31
+
+---
+
+## 2026-08-31 精品能力体系重构
+
+### 阶段目标
+
+项目从“常见 Vue 封装集合”调整为“精品通用能力实验室”：删除普通能力和无消费者的基础设施，只保留能解决真实边界问题、值得跨项目复用的正式能力。
+
+### 架构与产品边界
+
+- 重构为 `packages`、`internal`、`apps/playground` 和 `apps/docs` 四个明确层次；
+- 新增正式能力目录 `capabilityCatalog`，统一成熟度、问题定义和发布入口；
+- 建立源码、类型、测试、Demo、文档和导出的完整准入标准；
+- 清理普通组件、简单工具、薄 Hook 和缺少业务价值的抽象基础设施。
+
+### 正式能力
+
+- **Feedback Suite**：统一 Modal、Loading、Message 的层级、滚动锁、焦点和页面副作用；
+- **Typewriter**：重构为 Unicode 安全、队列驱动、控制语义完整的文本动画能力；
+- **v-tooltip**：新增碰撞定位、溢出检测、键盘访问、主题和生命周期管理完整的提示指令。
+
+### 体验与文档
+
+- Playground 改为两层手风琴能力导航，并修复响应式侧边栏状态；
+- 重构 Header、首页文案、搜索、面包屑、成熟度和页面布局；
+- Message 采用紧凑四态通知体系，并修复计时暂停、关闭遮挡和退场层级问题；
+- 建立项目级注释规范，所有公共 API 和复杂状态协调说明“为什么”；
+- 规定设计方案默认附带可视化 Demo；
+- 所有代码变更必须同步关联文档。
+
+### 基础设施清理
+
+- 删除无消费者的通用 Mock 服务及 CRUD、认证、短信、OSS、SSE 样板；
+- 删除失效代理、启动脚本和 Express、CORS、TSX、Concurrently 等专属依赖；
+- 网络模拟改为由具体正式能力驱动，默认使用能力就近 fixture。
+
+### 质量结果
+
+- 当前保留 3 项正式 Beta 能力；
+- 自动化测试增至 34 项；
+- 库、Playground 和文档构建全部通过；
+- 完整决策与后续准入原则见 `SESSION_CONTEXT.md`。
 
 ---
 
@@ -14,38 +57,38 @@
 
 #### 🔴 严重问题（2 项）
 
-| 问题 | 文件 | 违反规范 | 修复方案 |
-| ---- | ---- | -------- | -------- |
-| `withDefaults` + 解构混用 | `Button/ButtonGroup.vue` | §9.1 踩坑记录 | 改为 `const { vertical = false } = defineProps<Props>()` |
-| 硬编码中文文本 | `Pagination/Pagination.vue` | §2.0 i18n 规范 | 引入 `useI18n()`，6 处文案改为 `t()` 调用 |
+| 问题                      | 文件                        | 违反规范       | 修复方案                                                 |
+| ------------------------- | --------------------------- | -------------- | -------------------------------------------------------- |
+| `withDefaults` + 解构混用 | `Button/ButtonGroup.vue`    | §9.1 踩坑记录  | 改为 `const { vertical = false } = defineProps<Props>()` |
+| 硬编码中文文本            | `Pagination/Pagination.vue` | §2.0 i18n 规范 | 引入 `useI18n()`，6 处文案改为 `t()` 调用                |
 
 #### 🟡 中等问题（14 项）
 
 **CSS 变量缺少 Fallback（§4.3）**：为以下组件补全 23 处 CSS 变量 fallback 默认值：
 
-| 文件 | 修复变量数 |
-| ---- | --------- |
-| `Modal/Modal.vue` | 1 (`--mf-modal-min-width`) |
-| `Tag/Tag.vue` | 3 (padding/font-size/border-color) |
-| `Button/Button.vue` | 1 (padding) |
-| `Input/Input.vue` | 3 (padding/font-size/bg) |
-| `plugins/loading/Loading.vue` | 3 (border-radius/spacing/font) |
-| `plugins/message/Message.vue` | 12 (颜色/间距/字体/阴影) |
+| 文件                          | 修复变量数                         |
+| ----------------------------- | ---------------------------------- |
+| `Modal/Modal.vue`             | 1 (`--mf-modal-min-width`)         |
+| `Tag/Tag.vue`                 | 3 (padding/font-size/border-color) |
+| `Button/Button.vue`           | 1 (padding)                        |
+| `Input/Input.vue`             | 3 (padding/font-size/bg)           |
+| `plugins/loading/Loading.vue` | 3 (border-radius/spacing/font)     |
+| `plugins/message/Message.vue` | 12 (颜色/间距/字体/阴影)           |
 
 #### 🟢 轻微问题（4 项）
 
 **ref 数组响应式操作优化（§9.10）**：将 `push/splice` 改为展开运算符创建新数组：
 
-| 文件 | 修复方法 |
-| ---- | -------- |
-| `hooks/useTree.ts` | `toggleExpand/toggleCheck`: splice → filter/[...展开] |
-| `utils/tree.ts` | `arrayToTree`: push → [...展开] |
-| `hooks/useFileUpload.ts` | upload: push → [...展开] |
+| 文件                     | 修复方法                                              |
+| ------------------------ | ----------------------------------------------------- |
+| `hooks/useTree.ts`       | `toggleExpand/toggleCheck`: splice → filter/[...展开] |
+| `utils/tree.ts`          | `arrayToTree`: push → [...展开]                       |
+| `hooks/useFileUpload.ts` | upload: push → [...展开]                              |
 
 #### 其他修复
 
-| 问题 | 文件 | 修复内容 |
-| ---- | ---- | -------- |
+| 问题           | 文件                        | 修复内容             |
+| -------------- | --------------------------- | -------------------- |
 | JSDoc 格式错误 | `Pagination/Pagination.vue` | §9.5: 标签与描述分行 |
 
 ### 三、i18n 语言包扩展

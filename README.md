@@ -55,7 +55,7 @@ npm run build
 npm run docs:build
 ```
 
-详细准入规则见 [.project/STANDARDS.md](.project/STANDARDS.md)。
+详细准入规则见 [.project/STANDARDS.md](.project/STANDARDS.md)，本轮完整重构决策见 [.project/SESSION_CONTEXT.md](.project/SESSION_CONTEXT.md)。
 
 ## License
 
