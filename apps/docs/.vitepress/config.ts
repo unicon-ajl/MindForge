@@ -16,7 +16,15 @@ export default defineConfig({
       { text: 'Tooltip', link: '/directives/tooltip' }
     ],
     sidebar: {
-      '/guide/': [{ text: '指南', items: [{ text: '快速开始', link: '/guide/' }] }],
+      '/guide/': [
+        {
+          text: '指南',
+          items: [
+            { text: '快速开始', link: '/guide/' },
+            { text: '视觉语言', link: '/guide/visual-language' }
+          ]
+        }
+      ],
       '/infrastructure/': [
         {
           text: '反馈体系',

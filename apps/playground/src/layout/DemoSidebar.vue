@@ -128,7 +128,7 @@ function selectItem(id: string): void {
   padding: 3px 8px;
   border-radius: 999px;
   color: var(--mf-color-primary);
-  background: rgba(64, 158, 255, 0.1);
+  background: rgba(82, 103, 233, 0.1);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0;
@@ -172,7 +172,7 @@ function selectItem(id: string): void {
 
     .demo-sidebar-group-arrow {
       color: var(--mf-color-primary);
-      background: rgba(64, 158, 255, 0.1);
+      background: rgba(82, 103, 233, 0.1);
     }
   }
 
@@ -181,7 +181,7 @@ function selectItem(id: string): void {
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(64, 158, 255, 0.35);
+    outline: 2px solid rgba(82, 103, 233, 0.3);
     outline-offset: 2px;
   }
 }
@@ -234,7 +234,7 @@ function selectItem(id: string): void {
 
   .demo-sidebar-group-arrow {
     color: var(--mf-color-primary);
-    background: rgba(64, 158, 255, 0.1);
+    background: rgba(82, 103, 233, 0.1);
   }
 
   .demo-sidebar-group-arrow-icon {
@@ -296,7 +296,7 @@ function selectItem(id: string): void {
 
   &:hover {
     color: var(--mf-color-primary);
-    background: rgba(64, 158, 255, 0.05);
+    background: rgba(82, 103, 233, 0.05);
   }
 
   &:active {
@@ -304,13 +304,13 @@ function selectItem(id: string): void {
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(64, 158, 255, 0.35);
+    outline: 2px solid rgba(82, 103, 233, 0.3);
     outline-offset: -2px;
   }
 
   &.active {
     color: var(--mf-color-primary);
-    background: rgba(64, 158, 255, 0.08);
+    background: rgba(82, 103, 233, 0.08);
     font-weight: 600;
   }
 

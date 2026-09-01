@@ -320,7 +320,7 @@ onScopeDispose(() => {
     padding: 6px 10px;
     border: 1px solid var(--mf-prompt-border, #dcdfe6);
     border-radius: var(--mf-prompt-radius, 8px);
-    color: var(--mf-prompt-trigger-color, #606266);
+    color: var(--mf-prompt-trigger-color, #4c566a);
     background: var(--mf-prompt-bg, #fff);
     cursor: pointer;
   }
@@ -331,11 +331,11 @@ onScopeDispose(() => {
     max-height: min(var(--mf-prompt-max-height, 420px), calc(100vh - 16px));
     padding: 8px;
     overflow: auto;
-    border: 1px solid var(--mf-prompt-border, #e4e7ed);
+    border: 1px solid var(--mf-prompt-border, #e3e7ef);
     border-radius: var(--mf-prompt-radius, 10px);
-    color: var(--mf-prompt-text, #303133);
+    color: var(--mf-prompt-text, #182033);
     background: var(--mf-prompt-bg, #fff);
-    box-shadow: var(--mf-prompt-shadow, 0 8px 28px rgb(0 0 0 / 14%));
+    box-shadow: var(--mf-prompt-shadow, 0 14px 36px rgba(29, 39, 67, 0.14));
   }
 
   &__group + &__group {
@@ -343,7 +343,7 @@ onScopeDispose(() => {
   }
   &__group-label {
     padding: 6px 10px 4px;
-    color: var(--mf-prompt-muted, #909399);
+    color: var(--mf-prompt-muted, #778197);
     font-size: 12px;
     font-weight: 600;
   }
@@ -363,10 +363,10 @@ onScopeDispose(() => {
 
     &:hover,
     &.is-active {
-      background: var(--mf-prompt-active-bg, #ecf5ff);
+      background: var(--mf-prompt-active-bg, #eef1ff);
     }
     &:focus-visible {
-      outline: 2px solid var(--mf-prompt-focus, #409eff);
+      outline: 2px solid var(--mf-prompt-focus, #5267e9);
       outline-offset: -2px;
     }
     &:disabled {
@@ -380,7 +380,7 @@ onScopeDispose(() => {
     height: 18px;
     flex: none;
     margin-top: 1px;
-    color: var(--mf-prompt-icon, #606266);
+    color: var(--mf-prompt-icon, #4c566a);
   }
   &__copy {
     min-width: 0;
@@ -394,13 +394,13 @@ onScopeDispose(() => {
   }
   &__description {
     overflow-wrap: anywhere;
-    color: var(--mf-prompt-muted, #909399);
+    color: var(--mf-prompt-muted, #778197);
     font-size: 12px;
     line-height: 1.45;
   }
   &__state {
     padding: 24px 16px;
-    color: var(--mf-prompt-muted, #909399);
+    color: var(--mf-prompt-muted, #778197);
     text-align: center;
     font-size: 14px;
   }

@@ -116,17 +116,17 @@ notice.update({
 
 通知开始退场后会继续保留当前浮层层级，直到动画节点完全移除，避免关闭过程中被固定 Header 或其他页面元素遮挡。
 
-| 选项           | 类型            | 默认值               | 说明                                      |
-| -------------- | --------------- | -------------------- | ----------------------------------------- |
-| `message`      | `string`        | —                    | 必填主文案，直接说明当前结果              |
-| `description`  | `string`        | —                    | 可选辅助文案，补充原因、影响或下一步      |
-| `type`         | `MessageType`   | `'info'`             | `info`、`success`、`warning` 或 `error`   |
-| `loading`      | `boolean`       | `false`              | 展示进行中图标，适用于未完成任务          |
-| `duration`     | `number`        | 全局 `3000`          | 自动关闭毫秒数；`0` 表示常驻              |
-| `closable`     | `boolean`       | `true`               | 是否展示 32px 的主动关闭热区              |
-| `closeLabel`   | `string`        | `'Close notification'` | 关闭按钮的无障碍文案                    |
-| `pauseOnHover` | `boolean`       | `true`               | 悬停或焦点进入时是否暂停剩余倒计时        |
-| `onClose`      | `() => void`    | —                    | 通知移出队列后的回调                      |
+| 选项           | 类型          | 默认值                 | 说明                                    |
+| -------------- | ------------- | ---------------------- | --------------------------------------- |
+| `message`      | `string`      | —                      | 必填主文案，直接说明当前结果            |
+| `description`  | `string`      | —                      | 可选辅助文案，补充原因、影响或下一步    |
+| `type`         | `MessageType` | `'info'`               | `info`、`success`、`warning` 或 `error` |
+| `loading`      | `boolean`     | `false`                | 展示进行中图标，适用于未完成任务        |
+| `duration`     | `number`      | 全局 `3000`            | 自动关闭毫秒数；`0` 表示常驻            |
+| `closable`     | `boolean`     | `true`                 | 是否展示 32px 的主动关闭热区            |
+| `closeLabel`   | `string`      | `'Close notification'` | 关闭按钮的无障碍文案                    |
+| `pauseOnHover` | `boolean`     | `true`                 | 悬停或焦点进入时是否暂停剩余倒计时      |
+| `onClose`      | `() => void`  | —                      | 通知移出队列后的回调                    |
 
 ### 主题变量
 
@@ -136,11 +136,15 @@ notice.update({
 :root {
   --mf-message-width: 380px;
   --mf-message-bg: #fff;
-  --mf-message-text: #202939;
-  --mf-message-muted: #6f7c90;
-  --mf-message-border: #e4e9f1;
-  --mf-message-radius: 12px;
-  --mf-message-shadow: 0 10px 26px rgba(31, 48, 76, 0.14);
+  --mf-message-text: #182033;
+  --mf-message-muted: #778197;
+  --mf-message-border: #e3e7ef;
+  --mf-message-radius: 14px;
+  --mf-message-shadow: 0 14px 36px rgba(29, 39, 67, 0.14);
+  --mf-modal-border-radius: 16px;
+  --mf-modal-bg: rgba(255, 255, 255, 0.98);
+  --mf-modal-divider: #edf0f5;
+  --mf-loading-mask-bg: rgba(250, 251, 254, 0.9);
 }
 ```
 

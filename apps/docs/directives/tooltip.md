@@ -82,6 +82,7 @@ app.use(tooltipPlugin)
   --mf-tooltip-background: #1f6feb;
   --mf-tooltip-color: #fff;
   --mf-tooltip-arrow-color: #1f6feb;
+  --mf-tooltip-border: rgba(255, 255, 255, 0.1);
   --mf-tooltip-shadow: 0 6px 20px rgb(31 111 235 / 24%);
   --mf-tooltip-radius: 8px;
   --mf-tooltip-padding: 8px 12px;

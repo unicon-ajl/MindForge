@@ -72,3 +72,16 @@ type TypewriterPhase = 'idle' | 'typing' | 'holding' | 'deleting' | 'paused' | '
 - 动画文字不逐字触发读屏，完整文本输入完成后才播报；
 - 默认遵循 `prefers-reduced-motion`，需要时可设置 `reduced-motion="always"`；
 - 光标在减弱动画模式下停止闪烁。
+
+## 视觉定制
+
+组件继承所在文本环境的字体和颜色，只为光标提供必要的默认视觉。可通过以下变量接入业务主题：
+
+```css
+.hero-title {
+  --mf-typewriter-cursor-bg: #5267e9;
+  --mf-typewriter-cursor-width: 2px;
+  --mf-typewriter-cursor-gap: 2px;
+  --mf-typewriter-cursor-radius: 999px;
+}
+```

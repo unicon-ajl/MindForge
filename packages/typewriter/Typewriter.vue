@@ -189,8 +189,11 @@ defineExpose(controller)
     width: var(--mf-typewriter-cursor-width, 2px);
     height: var(--mf-typewriter-cursor-height, 1em);
     margin-left: var(--mf-typewriter-cursor-gap, 2px);
-    border-radius: var(--mf-typewriter-cursor-radius, 0);
-    background: var(--mf-typewriter-cursor-bg, var(--mf-color-primary, #409eff));
+    border-radius: var(--mf-typewriter-cursor-radius, 999px);
+    background: var(--mf-typewriter-cursor-bg, var(--mf-color-primary, #5267e9));
+    box-shadow:
+      0 0 0 1px rgba(82, 103, 233, 0.04),
+      0 0 8px rgba(82, 103, 233, 0.28);
     animation: mf-cursor-blink var(--mf-typewriter-blink-duration, 1s) step-end infinite;
   }
 

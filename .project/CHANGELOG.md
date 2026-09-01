@@ -4,6 +4,15 @@
 
 ---
 
+## 2026-09-01 统一视觉语言
+
+- 建立低饱和靛蓝、冷灰中性色、分级圆角和柔阴影组成的 Playground 视觉规范；
+- 统一 Feedback、Typewriter、Prompt Suggestions 与 Tooltip 的表面、按钮、焦点和状态反馈；
+- 优化 Modal 遮罩与分区、Loading 轻质遮罩、Message 通知表面、Typewriter 光标和 Tooltip 双主题；
+- 新增视觉语言文档并同步各能力主题变量说明。
+
+---
+
 ## 2026-08-31 Prompt Suggestions
 
 - 新增 `mind-forge/prompt-suggestions` 子路径和 `MfPromptSuggestions`；

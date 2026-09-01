@@ -5,27 +5,27 @@
 // ============================================================
 
 // 颜色变量
-$--color-primary: #409eff !default;
-$--color-success: #67c23a !default;
-$--color-warning: #e6a23c !default;
-$--color-danger: #f56c6c !default;
-$--color-info: #909399 !default;
+$--color-primary: #5267e9 !default;
+$--color-success: #2f9e72 !default;
+$--color-warning: #d68a20 !default;
+$--color-danger: #d95763 !default;
+$--color-info: #748094 !default;
 
 // 文字颜色
-$--color-text-primary: #303133 !default;
-$--color-text-regular: #606266 !default;
-$--color-text-secondary: #909399 !default;
-$--color-text-placeholder: #c0c4cc !default;
+$--color-text-primary: #182033 !default;
+$--color-text-regular: #4c566a !default;
+$--color-text-secondary: #778197 !default;
+$--color-text-placeholder: #a7afbe !default;
 
 // 边框颜色
-$--border-color-base: #dcdfe6 !default;
-$--border-color-light: #e4e7ed !default;
-$--border-color-lighter: #ebeef5 !default;
-$--border-color-extra-light: #f2f6fc !default;
+$--border-color-base: #d9deea !default;
+$--border-color-light: #e6e9f0 !default;
+$--border-color-lighter: #edf0f5 !default;
+$--border-color-extra-light: #f3f5f8 !default;
 
 // 背景色
-$--background-color-base: #f5f7fa !default;
-$--background-color-light: #fafafa !default;
+$--background-color-base: #f6f7fb !default;
+$--background-color-light: #fafbfc !default;
 
 // 字体大小
 $--font-size-extra-small: 12px !default;
@@ -42,9 +42,9 @@ $--spacing-lg: 24px !default;
 $--spacing-xl: 32px !default;
 
 // 圆角
-$--border-radius-base: 4px !default;
-$--border-radius-small: 2px !default;
-$--border-radius-large: 6px !default;
+$--border-radius-base: 10px !default;
+$--border-radius-small: 7px !default;
+$--border-radius-large: 14px !default;
 
 // 阴影
 $--box-shadow-base: 0 2px 12px 0 rgba(0, 0, 0, 0.1) !default;
@@ -53,4 +53,4 @@ $--box-shadow-light:
   0 0 6px rgba(0, 0, 0, 0.04) !default;
 
 // 过渡动画
-$--transition-duration-base: 0.3s !default;
+$--transition-duration-base: 0.22s !default;

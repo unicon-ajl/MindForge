@@ -89,7 +89,8 @@ const props = withDefaults(defineProps<Props>(), {
   closeOnEscape: true,
   trapFocus: true,
   lockScroll: true,
-  closeLabel: 'Close'
+  closeLabel: 'Close',
+  ariaLabel: undefined
 })
 
 const emit = defineEmits<{
@@ -223,7 +224,9 @@ onScopeDispose(disposeOverlay)
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  padding: 16px;
+  background: rgba(15, 20, 34, 0.52);
+  backdrop-filter: blur(5px) saturate(0.9);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -231,9 +234,11 @@ onScopeDispose(disposeOverlay)
 
 .mf-modal {
   // 内容区自行滚动，弹窗整体始终限制在视口高度内。
-  background: #fff;
-  border-radius: var(--mf-modal-border-radius, 4px);
-  box-shadow: var(--mf-shadow-light, 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--mf-modal-border, rgba(255, 255, 255, 0.72));
+  border-radius: var(--mf-modal-border-radius, 16px);
+  color: var(--mf-modal-text, var(--mf-color-text-primary, #182033));
+  background: var(--mf-modal-bg, rgba(255, 255, 255, 0.98));
+  box-shadow: var(--mf-modal-shadow, 0 24px 70px rgba(15, 20, 34, 0.24));
   max-height: 90vh;
   max-width: calc(100vw - 32px);
   box-sizing: border-box;
@@ -241,15 +246,18 @@ onScopeDispose(disposeOverlay)
   min-width: min(var(--mf-modal-min-width, 520px), calc(100vw - 32px));
 
   &-header {
-    padding: var(--mf-spacing-lg, 18px) var(--mf-spacing-lg, 18px) var(--mf-spacing-sm, 8px);
+    min-height: 68px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--mf-modal-divider, #edf0f5);
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
 
   &-title {
-    font-size: var(--mf-font-size-lg, 18px);
-    font-weight: 500;
+    font-size: var(--mf-font-size-md, 16px);
+    font-weight: 650;
+    letter-spacing: -0.015em;
   }
 
   &-close {
@@ -259,49 +267,68 @@ onScopeDispose(disposeOverlay)
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    background: none;
-    border: none;
-    border-radius: 6px;
-    font-size: 24px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    font-size: 22px;
     cursor: pointer;
-    color: var(--mf-color-info, #909399);
+    color: var(--mf-color-text-secondary, #778197);
     line-height: 1;
 
     &:hover {
-      color: var(--mf-color-text-primary, #303133);
-      background: var(--mf-bg-color-base, #f5f7fa);
+      border-color: var(--mf-border-color-light, #e6e9f0);
+      color: var(--mf-color-text-primary, #182033);
+      background: var(--mf-bg-color-base, #f6f7fb);
     }
 
     &:focus-visible {
-      outline: 2px solid rgba(64, 158, 255, 0.4);
+      outline: 3px solid rgba(82, 103, 233, 0.18);
       outline-offset: 2px;
     }
   }
 
   &-body {
-    padding: var(--mf-spacing-sm, 8px) var(--mf-spacing-lg, 18px) var(--mf-spacing-lg, 18px);
+    padding: 22px;
+    color: var(--mf-modal-body-text, var(--mf-color-text-regular, #4c566a));
+    line-height: 1.7;
   }
 
   &-footer {
-    padding: var(--mf-spacing-sm, 8px) var(--mf-spacing-lg, 18px) var(--mf-spacing-lg, 18px);
+    padding: 16px 22px 22px;
+    border-top: 1px solid var(--mf-modal-divider, #edf0f5);
     text-align: right;
   }
 }
 
 .mf-modal-fade-enter-active,
 .mf-modal-fade-leave-active {
-  transition: opacity var(--mf-transition-duration, 0.3s);
+  transition: opacity var(--mf-transition-duration, 0.22s) ease;
+
+  .mf-modal {
+    transition:
+      opacity var(--mf-transition-duration, 0.22s) ease,
+      transform var(--mf-transition-duration, 0.22s) cubic-bezier(0.22, 1, 0.36, 1);
+  }
 }
 
 .mf-modal-fade-enter-from,
 .mf-modal-fade-leave-to {
   opacity: 0;
+
+  .mf-modal {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .mf-modal-fade-enter-active,
   .mf-modal-fade-leave-active {
     transition: none;
+
+    .mf-modal {
+      transition: none;
+    }
   }
 }
 </style>

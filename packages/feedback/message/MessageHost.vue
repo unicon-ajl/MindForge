@@ -103,11 +103,11 @@ watchEffect(() => {
   min-width: 0;
   padding: var(--mf-message-padding, 15px 13px 15px 16px);
   overflow: hidden;
-  border: 1px solid var(--mf-message-border, #e4e9f1);
-  border-radius: var(--mf-message-radius, 12px);
-  box-shadow: var(--mf-message-shadow, 0 10px 26px rgba(31, 48, 76, 0.14));
+  border: 1px solid var(--mf-message-border, #e3e7ef);
+  border-radius: var(--mf-message-radius, 14px);
+  box-shadow: var(--mf-message-shadow, 0 14px 36px rgba(29, 39, 67, 0.14));
   background: var(--mf-message-bg, #fff);
-  color: var(--mf-message-text, #202939);
+  color: var(--mf-message-text, #182033);
 
   // 细色条只承担状态识别，不用整块底色抢占正文注意力。
   &::before {
@@ -120,20 +120,20 @@ watchEffect(() => {
   }
 
   &--info {
-    --mf-message-status: var(--mf-color-primary, #3b82f6);
-    --mf-message-status-soft: var(--mf-message-info-soft, #eaf3ff);
+    --mf-message-status: var(--mf-color-primary, #5267e9);
+    --mf-message-status-soft: var(--mf-message-info-soft, #eef1ff);
   }
 
   &--success {
-    --mf-message-status: var(--mf-color-success, #16a36a);
+    --mf-message-status: var(--mf-color-success, #2f9e72);
     --mf-message-status-soft: var(--mf-message-success-soft, #e9f8f1);
   }
   &--warning {
-    --mf-message-status: var(--mf-color-warning, #d98a0b);
+    --mf-message-status: var(--mf-color-warning, #d68a20);
     --mf-message-status-soft: var(--mf-message-warning-soft, #fff6e3);
   }
   &--error {
-    --mf-message-status: var(--mf-color-danger, #dc4c4c);
+    --mf-message-status: var(--mf-color-danger, #d95763);
     --mf-message-status-soft: var(--mf-message-error-soft, #fff0f0);
   }
   &__icon {
@@ -171,11 +171,11 @@ watchEffect(() => {
   }
   &__title {
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 1.45;
   }
   &__description {
-    color: var(--mf-message-muted, #6f7c90);
+    color: var(--mf-message-muted, #778197);
     font-size: 12px;
     line-height: 1.5;
   }

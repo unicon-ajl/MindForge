@@ -213,7 +213,7 @@ onUnmounted(() => {
 
   &:hover,
   &.selected {
-    background: rgba(64, 158, 255, 0.06);
+    background: rgba(82, 103, 233, 0.06);
   }
 }
 

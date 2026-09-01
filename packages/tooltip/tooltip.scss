@@ -3,32 +3,33 @@
   position: fixed;
   width: max-content;
   max-width: min(var(--mf-tooltip-max-width, 320px), calc(100vw - 16px));
-  padding: var(--mf-tooltip-padding, 7px 10px);
-  border-radius: var(--mf-tooltip-radius, 6px);
+  padding: var(--mf-tooltip-padding, 8px 11px);
+  border: 1px solid var(--mf-tooltip-border, rgba(255, 255, 255, 0.1));
+  border-radius: var(--mf-tooltip-radius, 8px);
   color: var(--mf-tooltip-color, #fff);
-  background: var(--mf-tooltip-background, rgba(31, 35, 41, 0.94));
-  box-shadow: var(--mf-tooltip-shadow, 0 4px 16px rgba(0, 0, 0, 0.18));
+  background: var(--mf-tooltip-background, rgba(24, 32, 51, 0.96));
+  box-shadow: var(--mf-tooltip-shadow, 0 8px 24px rgba(15, 20, 34, 0.2));
   font-size: var(--mf-tooltip-font-size, 12px);
   line-height: 1.5;
   overflow-wrap: anywhere;
   pointer-events: none;
   // 初始态保留在 DOM 中完成定位，再通过 open 类触发平滑入场。
   opacity: 0;
-  transform: scale(0.96);
+  transform: translateY(2px) scale(0.98);
   transition:
     opacity 120ms ease,
     transform 120ms ease;
 
   &--open {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0) scale(1);
   }
 
   &__arrow {
     position: absolute;
     width: 10px;
     height: 10px;
-    color: var(--mf-tooltip-arrow-color, var(--mf-tooltip-background, rgba(31, 35, 41, 0.94)));
+    color: var(--mf-tooltip-arrow-color, var(--mf-tooltip-background, rgba(24, 32, 51, 0.96)));
 
     svg {
       // 箭头由指令按最终方向写入 SVG 路径，颜色与主题变量保持一致。
@@ -42,12 +43,13 @@
 
   &[data-theme='light'] {
     // 浅色主题额外增加细边框，保证白色浮层在浅色页面上仍有清晰边界。
-    --mf-tooltip-color: #303133;
+    --mf-tooltip-color: #182033;
     --mf-tooltip-background: #fff;
     --mf-tooltip-arrow-color: #fff;
-    --mf-tooltip-shadow: 0 4px 18px rgba(31, 35, 41, 0.16);
+    --mf-tooltip-border: #e3e7ef;
+    --mf-tooltip-shadow: 0 8px 24px rgba(29, 39, 67, 0.13);
 
-    border: 1px solid rgba(31, 35, 41, 0.1);
+    border-color: var(--mf-tooltip-border);
   }
 }
 

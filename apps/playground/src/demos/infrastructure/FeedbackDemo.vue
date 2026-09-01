@@ -107,15 +107,9 @@ onScopeDispose(() => loader.value?.close())
 </script>
 
 <style scoped lang="scss">
-.demo-block,
 .loading-target {
   margin-bottom: 20px;
-  padding: 20px;
-  background: var(--mf-bg-color-light);
-  border-radius: var(--mf-border-radius-base);
-}
-.demo-block h4 {
-  margin: 0 0 12px;
+  background: radial-gradient(circle at 90% 10%, rgba(82, 103, 233, 0.08), transparent 34%), #fff;
 }
 .loading-target {
   height: 140px;
@@ -124,14 +118,7 @@ onScopeDispose(() => loader.value?.close())
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
-}
-.demo-button {
-  padding: 8px 14px;
-  border: 0;
-  border-radius: 4px;
-  color: #fff;
-  background: var(--mf-color-primary);
-  cursor: pointer;
+  color: var(--mf-color-text-regular);
 }
 .demo-button + .demo-button {
   margin-left: 0;
@@ -140,18 +127,5 @@ onScopeDispose(() => loader.value?.close())
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-.demo-button--success {
-  background: var(--mf-color-success);
-}
-.demo-button--warning {
-  background: var(--mf-color-warning);
-}
-.demo-button--danger {
-  background: var(--mf-color-danger);
-}
-.demo-button--secondary {
-  color: var(--mf-color-primary);
-  background: rgba(64, 158, 255, 0.1);
 }
 </style>

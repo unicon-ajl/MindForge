@@ -72,29 +72,12 @@ const changeContent = (): void => {
 
 <style scoped lang="scss">
 .demo-block {
-  margin-bottom: 20px;
-  padding: 20px;
-  border-radius: var(--mf-border-radius-base);
-  background: var(--mf-bg-color-light);
-  h4 {
-    margin: 0 0 12px;
-  }
   &--edge {
-    padding-left: 8px;
+    padding-left: 12px;
   }
 }
 .demo-button {
   margin-right: 8px;
-  padding: 8px 14px;
-  border: 1px solid var(--mf-color-primary);
-  border-radius: 4px;
-  color: #fff;
-  background: var(--mf-color-primary);
-  cursor: pointer;
-  &--plain {
-    color: var(--mf-color-primary);
-    background: #fff;
-  }
 }
 .overflow-row {
   display: flex;
@@ -104,12 +87,19 @@ const changeContent = (): void => {
 .overflow-text {
   display: block;
   width: 220px;
-  padding: 10px;
+  padding: 12px 14px;
   overflow: hidden;
-  border: 1px solid var(--mf-border-color-light);
-  border-radius: 4px;
-  background: #fff;
+  border: 1px solid var(--mf-border-color-base);
+  border-radius: var(--mf-border-radius-base);
+  color: var(--mf-color-text-regular);
+  background: linear-gradient(180deg, #fff, #fafbff);
+  box-shadow: 0 3px 10px rgba(29, 39, 67, 0.04);
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  &:focus-visible {
+    border-color: rgba(82, 103, 233, 0.55);
+    outline: 3px solid rgba(82, 103, 233, 0.13);
+  }
 }
 </style>

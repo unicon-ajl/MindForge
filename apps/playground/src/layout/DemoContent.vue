@@ -144,10 +144,10 @@ const currentDemoComponent = computed(() => {
 
 .demo-page-status {
   padding: 4px 9px;
-  border: 1px solid rgba(64, 158, 255, 0.28);
+  border: 1px solid rgba(82, 103, 233, 0.26);
   border-radius: var(--mf-border-radius-round);
   color: var(--mf-color-primary);
-  background: rgba(64, 158, 255, 0.07);
+  background: rgba(82, 103, 233, 0.07);
   font-size: 10px;
   font-weight: 700;
 }
@@ -177,8 +177,6 @@ const currentDemoComponent = computed(() => {
 
   :deep(.demo-block) {
     margin: 0;
-    border: 1px solid var(--mf-border-color-extra-light);
-    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.035);
   }
 
   :deep(.demo-block--wide) {

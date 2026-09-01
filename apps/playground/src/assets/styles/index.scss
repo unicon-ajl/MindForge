@@ -2,15 +2,113 @@
 @use './reset.scss';
 @use './theme.scss' as *;
 
+// 所有能力 Demo 共用同一套表面、标题和按钮语言，避免每个 Demo 自行形成一套视觉系统。
+.demo-block,
+.loading-target {
+  position: relative;
+  padding: 22px;
+  border: 1px solid var(--mf-border-color-light);
+  border-radius: var(--mf-border-radius-lg);
+  background: var(--mf-bg-color-elevated);
+  box-shadow: var(--mf-shadow-soft);
+}
+
+.demo-block h4 {
+  margin: 0 0 16px;
+  color: var(--mf-color-text-primary);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.demo-button {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 15px;
+  border: 1px solid transparent;
+  border-radius: var(--mf-border-radius-sm);
+  color: #fff;
+  background: var(--mf-color-primary);
+  box-shadow: 0 4px 12px rgba(82, 103, 233, 0.18);
+  font-size: 13px;
+  font-weight: 550;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 120ms ease;
+
+  &:hover {
+    background: var(--mf-color-primary-hover);
+    box-shadow: 0 7px 18px rgba(82, 103, 233, 0.24);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    box-shadow: 0 2px 7px rgba(82, 103, 233, 0.2);
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(82, 103, 233, 0.2);
+    outline-offset: 2px;
+  }
+
+  &--plain,
+  &--secondary,
+  &--quiet {
+    border-color: var(--mf-border-color-base);
+    color: var(--mf-color-text-regular);
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(29, 39, 67, 0.04);
+
+    &:hover {
+      border-color: rgba(82, 103, 233, 0.42);
+      color: var(--mf-color-primary);
+      background: var(--mf-color-primary-soft);
+      box-shadow: 0 5px 14px rgba(82, 103, 233, 0.1);
+    }
+  }
+
+  &--success,
+  &--warning,
+  &--danger {
+    color: var(--demo-button-state-color);
+    border-color: color-mix(in srgb, var(--demo-button-state-color) 22%, transparent);
+    background: color-mix(in srgb, var(--demo-button-state-color) 9%, white);
+    box-shadow: none;
+
+    &:hover {
+      color: #fff;
+      background: var(--demo-button-state-color);
+      box-shadow: 0 6px 16px color-mix(in srgb, var(--demo-button-state-color) 22%, transparent);
+    }
+  }
+
+  &--success {
+    --demo-button-state-color: var(--mf-color-success);
+  }
+  &--warning {
+    --demo-button-state-color: var(--mf-color-warning);
+  }
+  &--danger {
+    --demo-button-state-color: var(--mf-color-danger);
+  }
+}
+
 // Demo 关键说明采用统一信息条，强调边界但不抢夺演示主体层级。
 .demo-tip {
   position: relative;
   margin: 12px 0 0;
   padding: 10px 14px 10px 38px;
-  border: 1px solid rgba(64, 158, 255, 0.18);
-  border-radius: 8px;
+  border: 1px solid rgba(82, 103, 233, 0.14);
+  border-radius: var(--mf-border-radius-base);
   color: var(--mf-color-text-regular);
-  background: linear-gradient(135deg, rgba(64, 158, 255, 0.08), rgba(64, 158, 255, 0.025));
+  background: linear-gradient(135deg, rgba(82, 103, 233, 0.065), rgba(82, 103, 233, 0.018));
   font-size: 13px;
   line-height: 1.65;
 
@@ -25,7 +123,7 @@
     place-items: center;
     border-radius: 50%;
     color: #fff;
-    background: var(--mf-color-primary);
+    background: linear-gradient(145deg, #6d7ef0, var(--mf-color-primary));
     font-size: 11px;
     font-weight: 700;
     font-style: normal;

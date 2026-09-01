@@ -36,13 +36,24 @@
         />
       </div>
       <div class="controls">
-        <button @click="controllerRef?.start()">开始</button>
-        <button @click="controllerRef?.pause()">暂停</button>
-        <button @click="controllerRef?.resume()">继续</button>
-        <button @click="controllerRef?.skip()">跳过</button>
-        <button @click="controllerRef?.restart()">重播</button>
-        <button @click="controllerRef?.stop()">停止并保留</button>
-        <button @click="controllerRef?.stop({ preserveText: false })">停止并清空</button>
+        <button class="demo-button" @click="controllerRef?.start()">开始</button>
+        <button class="demo-button demo-button--quiet" @click="controllerRef?.pause()">暂停</button>
+        <button class="demo-button demo-button--quiet" @click="controllerRef?.resume()">
+          继续
+        </button>
+        <button class="demo-button demo-button--quiet" @click="controllerRef?.skip()">跳过</button>
+        <button class="demo-button demo-button--quiet" @click="controllerRef?.restart()">
+          重播
+        </button>
+        <button class="demo-button demo-button--quiet" @click="controllerRef?.stop()">
+          停止并保留
+        </button>
+        <button
+          class="demo-button demo-button--quiet"
+          @click="controllerRef?.stop({ preserveText: false })"
+        >
+          停止并清空
+        </button>
       </div>
       <p class="demo-tip">
         控制器可暂停、继续、跳过或选择是否保留当前文字。当前阶段：{{ phase }}。
@@ -89,27 +100,26 @@ const lastEvent = ref('等待事件')
 </script>
 
 <style scoped lang="scss">
-.demo-block {
-  margin-bottom: 20px;
-  padding: 20px;
-  background: var(--mf-bg-color-light);
-  border-radius: var(--mf-border-radius-base);
-
-  h4 {
-    margin: 0 0 12px;
-  }
-}
-
 .demo-stage {
-  min-height: 52px;
-  padding: 16px;
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  padding: 18px 20px;
   border: 1px solid var(--mf-border-color-light);
   border-radius: var(--mf-border-radius-base);
-  background: #fff;
-  font-size: 18px;
+  color: var(--mf-color-text-primary);
+  background: linear-gradient(135deg, rgba(82, 103, 233, 0.045), transparent 58%), #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  font-size: 17px;
+  font-weight: 520;
+  line-height: 1.65;
 
   &--accent {
-    color: var(--mf-color-primary);
+    border-color: rgba(82, 103, 233, 0.2);
+    color: #4053ca;
+    background:
+      radial-gradient(circle at 90% 20%, rgba(82, 103, 233, 0.12), transparent 36%),
+      linear-gradient(135deg, #f7f8ff, #fff);
   }
 }
 
@@ -118,18 +128,5 @@ const lastEvent = ref('等待事件')
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
-
-  button {
-    padding: 7px 12px;
-    border: 1px solid var(--mf-border-color-base);
-    border-radius: 4px;
-    background: #fff;
-    cursor: pointer;
-
-    &:hover {
-      color: var(--mf-color-primary);
-      border-color: var(--mf-color-primary);
-    }
-  }
 }
 </style>

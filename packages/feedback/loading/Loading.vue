@@ -64,7 +64,9 @@ const maskStyle = computed(() => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.9);
+  color: var(--mf-loading-custom-color, var(--mf-color-primary, #5267e9));
+  background: var(--mf-loading-mask-bg, rgba(250, 251, 254, 0.9));
+  backdrop-filter: blur(3px) saturate(0.9);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,6 +82,7 @@ const maskStyle = computed(() => {
   position: relative;
   width: 42px;
   height: 42px;
+  filter: drop-shadow(0 4px 8px rgba(82, 103, 233, 0.16));
 }
 
 /* 点状动画 */
@@ -89,8 +92,8 @@ const maskStyle = computed(() => {
   top: 0;
   width: 4px;
   height: 12px;
-  background: var(--mf-loading-custom-color, var(--mf-color-primary));
-  border-radius: var(--mf-border-radius-sm, 2px);
+  background: currentcolor;
+  border-radius: 999px;
   transform-origin: center 21px;
   animation: loading-dot 1.2s ease-in-out infinite;
 
@@ -107,8 +110,8 @@ const maskStyle = computed(() => {
 .mf-loading-circle {
   width: 36px;
   height: 36px;
-  border: 3px solid rgba(64, 158, 255, 0.2);
-  border-top-color: var(--mf-loading-custom-color, var(--mf-color-primary));
+  border: 3px solid color-mix(in srgb, currentcolor 16%, transparent);
+  border-top-color: currentcolor;
   border-radius: 50%;
   animation: loading-circle 0.8s linear infinite;
 }
@@ -119,8 +122,8 @@ const maskStyle = computed(() => {
   width: 4px;
   height: 24px;
   margin: 0 2px;
-  background: var(--mf-loading-custom-color, var(--mf-color-primary));
-  border-radius: 2px;
+  background: currentcolor;
+  border-radius: 999px;
   animation: loading-bar 1s ease-in-out infinite;
 
   @for $i from 1 through 5 {
@@ -132,9 +135,11 @@ const maskStyle = computed(() => {
 }
 
 .mf-loading-text {
-  margin-top: var(--mf-spacing-md, 16px);
-  color: var(--mf-loading-custom-color, var(--mf-color-primary));
-  font-size: var(--mf-font-size-base, 14px);
+  margin-top: 14px;
+  color: var(--mf-loading-text, var(--mf-color-text-regular, #4c566a));
+  font-size: var(--mf-font-size-sm, 13px);
+  font-weight: 550;
+  letter-spacing: 0.01em;
 }
 
 @keyframes loading-dot {
