@@ -58,6 +58,8 @@ Overlay Manager 是内部实现，不作为公共 API 发布。
 
 Modal 开始退场时立即退出 ESC 栈，遮罩完全退场后才恢复滚动和打开前的焦点。`closable`、`closeOnEscape`、`trapFocus` 和 `lockScroll` 的职责互不绑定。
 
+默认标题使用 Vue 稳定实例 ID 建立 `aria-labelledby`，服务端渲染与客户端 hydration 保持一致。焦点陷阱覆盖原生表单控件、`contenteditable`、`summary`、iframe 和带 controls 的媒体元素；业务脚本把焦点移出当前顶层 Modal 时会立即拉回。
+
 ## Loading
 
 ```ts

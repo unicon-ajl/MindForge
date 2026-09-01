@@ -38,4 +38,20 @@ describe('activateFocusTrap', () => {
     release()
     expect(document.activeElement).toBe(trigger)
   })
+
+  it('supports contenteditable and immediately recaptures escaped focus', () => {
+    const outside = document.createElement('button')
+    const dialog = document.createElement('div')
+    const editable = document.createElement('div')
+    editable.setAttribute('contenteditable', 'true')
+    dialog.appendChild(editable)
+    document.body.append(outside, dialog)
+
+    const release = activateFocusTrap(dialog)
+    expect(document.activeElement).toBe(editable)
+
+    outside.focus()
+    expect(document.activeElement).toBe(editable)
+    release()
+  })
 })

@@ -50,6 +50,7 @@ apps/docs/          面向使用者的能力文档
 #### Overlay Manager
 
 - 所有浮层使用统一递增层级；
+- ESC 层级与焦点边界分别协调：Prompt Suggestions 构成焦点层，Tooltip、Loading 等非交互浮层不暂停底层 Modal 的焦点陷阱；
 - ESC 只作用于最顶层可处理浮层；
 - 不响应 ESC 的顶层 Modal 会阻止事件穿透到下层；
 - body 滚动锁使用引用计数，最后一层关闭后才恢复原状态；
@@ -141,7 +142,7 @@ apps/docs/          面向使用者的能力文档
 ## 8. 当前质量状态
 
 - 正式能力：4 项，均为 Beta；
-- 自动化测试：40 项；
+- 自动化测试：47 项；
 - 已验证 ESM、CommonJS、样式和类型声明构建；
 - Playground 与 VitePress 文档均可独立构建；
 - 当前已知非阻塞提示：Dart Sass legacy JS API 弃用警告，来自现有工具链调用方式。

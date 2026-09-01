@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { DirectiveBinding, ObjectDirective } from 'vue'
 import { isElementOverflowing, vTooltip } from './directive'
 import type { TooltipBindingValue } from './types'
+import { overlayManager } from '@internal/overlay'
 
 const stopAutoUpdate = vi.fn()
 
@@ -49,6 +50,7 @@ describe('vTooltip', () => {
 
   afterEach(() => {
     vi.runOnlyPendingTimers()
+    overlayManager.dispose()
     vi.useRealTimers()
   })
 
@@ -160,5 +162,66 @@ describe('vTooltip', () => {
     await vi.advanceTimersByTimeAsync(100)
 
     expect(document.querySelector('[role="tooltip"]')).not.toBeNull()
+  })
+
+  it('uses the shared overlay stack so ESC does not close an underlying Modal', async () => {
+    const closeModal = vi.fn()
+    overlayManager.register({
+      type: 'modal',
+      closeOnEscape: true,
+      blocksEscape: true,
+      onEscape: closeModal
+    })
+    const element = document.createElement('button')
+    document.body.appendChild(element)
+    directive.mounted?.(element, binding({ content: '顶层提示', delay: 0 }), {} as never, null)
+    element.dispatchEvent(new FocusEvent('focusin'))
+    await vi.advanceTimersByTimeAsync(0)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(document.querySelector('[role="tooltip"]')).toBeNull()
+    expect(closeModal).not.toHaveBeenCalled()
+
+    overlayManager.closeTopmost()
+    expect(closeModal).toHaveBeenCalledOnce()
+  })
+
+  it('closes multiple visible tooltips from newest to oldest', async () => {
+    const first = document.createElement('button')
+    const second = document.createElement('button')
+    document.body.append(first, second)
+    directive.mounted?.(first, binding({ content: '第一条', delay: 0 }), {} as never, null)
+    directive.mounted?.(second, binding({ content: '第二条', delay: 0 }), {} as never, null)
+    first.dispatchEvent(new FocusEvent('focusin'))
+    second.dispatchEvent(new FocusEvent('focusin'))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(document.querySelectorAll('[role="tooltip"]')).toHaveLength(2)
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(document.body.textContent).toContain('第一条')
+    expect(document.body.textContent).not.toContain('第二条')
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(document.querySelector('[role="tooltip"]')).toBeNull()
+  })
+
+  it('removes only its own aria-describedby token and normalizes invalid width', async () => {
+    const element = document.createElement('button')
+    element.setAttribute('aria-describedby', 'initial')
+    document.body.appendChild(element)
+    directive.mounted?.(
+      element,
+      binding({ content: '动态关系', delay: 0, maxWidth: Number.NaN }),
+      {} as never,
+      null
+    )
+    element.dispatchEvent(new FocusEvent('focusin'))
+    await vi.advanceTimersByTimeAsync(0)
+    const tooltip = document.querySelector<HTMLElement>('[role="tooltip"]')!
+    expect(tooltip.style.getPropertyValue('--mf-tooltip-max-width')).toBe('320px')
+
+    element.setAttribute('aria-describedby', `${element.getAttribute('aria-describedby')} runtime`)
+    element.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    expect(element.getAttribute('aria-describedby')).toBe('initial runtime')
   })
 })

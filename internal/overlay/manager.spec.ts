@@ -61,4 +61,14 @@ describe('createOverlayManager', () => {
     handle.unregister()
     expect(manager.getStack()).toHaveLength(0)
   })
+
+  it('keeps a Modal as the active focus layer under non-focus overlays', () => {
+    const manager = createOverlayManager()
+    const modal = manager.register({ type: 'modal', focusLayer: true })
+    const tooltip = manager.register({ type: 'custom', focusLayer: false })
+
+    expect(modal.isTopmost()).toBe(false)
+    expect(modal.isTopmostFocusLayer()).toBe(true)
+    expect(tooltip.isTopmostFocusLayer()).toBe(false)
+  })
 })

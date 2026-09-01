@@ -4,20 +4,39 @@ const FOCUSABLE_SELECTOR = [
   'input:not([disabled])',
   'select:not([disabled])',
   'textarea:not([disabled])',
+  'summary',
+  'iframe',
+  'audio[controls]',
+  'video[controls]',
+  '[contenteditable]:not([contenteditable="false"])',
   '[tabindex]:not([tabindex="-1"])'
 ].join(',')
 
+/** 自身可见不代表实际可交互，任一祖先隐藏都必须排除。 */
+function isVisible(element: HTMLElement, container: HTMLElement): boolean {
+  let current: HTMLElement | null = element
+  while (current) {
+    const style = window.getComputedStyle(current)
+    if (
+      current.hidden ||
+      current.inert ||
+      current.getAttribute('aria-hidden') === 'true' ||
+      style.display === 'none' ||
+      style.visibility === 'hidden'
+    ) {
+      return false
+    }
+    if (current === container) break
+    current = current.parentElement
+  }
+  return true
+}
+
 /** 返回当前仍可参与 Tab 顺序的元素；每次按键都重新查询以支持动态内容。 */
 function getFocusable(container: HTMLElement): HTMLElement[] {
-  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(element => {
-    const style = window.getComputedStyle(element)
-    return (
-      !element.closest('[hidden], [inert]') &&
-      element.getAttribute('aria-hidden') !== 'true' &&
-      style.display !== 'none' &&
-      style.visibility !== 'hidden'
-    )
-  })
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(element =>
+    isVisible(element, container)
+  )
 }
 
 /**
@@ -60,9 +79,17 @@ export function activateFocusTrap(
     }
   }
 
+  const handleFocusIn = (event: FocusEvent): void => {
+    if (!isActive() || (event.target instanceof Node && container.contains(event.target))) return
+    // 业务脚本或浏览器行为把焦点移出时立即拉回，而不是等待下一次 Tab。
+    ;(getFocusable(container)[0] ?? container).focus({ preventScroll: true })
+  }
+
   document.addEventListener('keydown', handleKeydown, true)
+  document.addEventListener('focusin', handleFocusIn, true)
   return () => {
     document.removeEventListener('keydown', handleKeydown, true)
+    document.removeEventListener('focusin', handleFocusIn, true)
     // 触发元素可能已随路由或条件渲染卸载，恢复前必须确认仍在文档中。
     if (previous?.isConnected) previous.focus({ preventScroll: true })
   }

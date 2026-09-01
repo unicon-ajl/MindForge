@@ -44,7 +44,6 @@
               </div>
               <button
                 v-for="item in group.items"
-                :id="optionId(item.id)"
                 :key="item.id"
                 :ref="element => setOptionRef(item.id, element)"
                 type="button"
@@ -82,17 +81,26 @@
 
 /** @module PromptSuggestions 支持异步竞态保护和完整键盘访问的智能建议面板。 */
 <script setup lang="ts">
-import { autoUpdate, computePosition, flip, offset, shift, type Placement } from '@floating-ui/dom'
+import {
+  autoUpdate,
+  computePosition,
+  flip,
+  offset as floatingOffset,
+  shift,
+  type Placement
+} from '@floating-ui/dom'
 import {
   computed,
   nextTick,
   onScopeDispose,
   ref,
+  shallowRef,
   useId,
   watch,
   type ComponentPublicInstance
 } from 'vue'
 import type { PromptSuggestion, PromptSuggestionSource, PromptSuggestionsStatus } from './types'
+import { overlayManager, type OverlayHandle } from '@internal/overlay'
 
 defineOptions({ name: 'MfPromptSuggestions' })
 
@@ -105,6 +113,8 @@ interface Props {
   context?: unknown
   /** 浮层首选位置，空间不足时会自动翻转和位移。 */
   placement?: Placement
+  /** 浮层与触发元素的间距，单位为 px。 */
+  offset?: number
   /** 列表的无障碍名称。 */
   ariaLabel?: string
   /** 默认触发按钮文本。 */
@@ -123,6 +133,7 @@ const props = withDefaults(defineProps<Props>(), {
   source: undefined,
   context: undefined,
   placement: 'top-start',
+  offset: 8,
   ariaLabel: '智能建议',
   triggerLabel: '你可以试试…',
   loadingText: '正在获取建议…',
@@ -141,7 +152,7 @@ const open = defineModel<boolean>('open', { default: false })
 const root = ref<HTMLElement | null>(null)
 const floating = ref<HTMLElement | null>(null)
 const listbox = ref<HTMLElement | null>(null)
-const loadedItems = ref<readonly PromptSuggestion[]>([])
+const loadedItems = shallowRef<readonly PromptSuggestion[]>([])
 const status = ref<PromptSuggestionsStatus>('idle')
 const loadError = ref<unknown>()
 const activeId = ref<string>()
@@ -150,8 +161,11 @@ const panelId = `mf-prompt-suggestions-${useId()}`
 let stopPositioning: (() => void) | undefined
 let controller: AbortController | undefined
 let requestId = 0
+let overlayHandle: OverlayHandle | undefined
 
-const displayedItems = computed(() => (props.source ? loadedItems.value : props.items))
+const displayedItems = computed<readonly PromptSuggestion[]>(() =>
+  props.source ? loadedItems.value : props.items
+)
 const enabledItems = computed(() => displayedItems.value.filter(item => !item.disabled))
 const groupedItems = computed(() => {
   const groups = new Map<string, PromptSuggestion[]>()
@@ -165,24 +179,39 @@ const groupedItems = computed(() => {
 })
 
 const panelStyle = ref<Record<string, string>>({})
+const referenceElement = (): HTMLElement | null =>
+  root.value?.querySelector<HTMLElement>('[aria-haspopup="listbox"]') ?? root.value
 const updatePosition = async (): Promise<void> => {
-  const reference = root.value
+  const reference = referenceElement()
   const panel = floating.value
   if (!reference || !panel) return
-  const result = await computePosition(reference, panel, {
-    strategy: 'fixed',
-    placement: props.placement,
-    middleware: [offset(8), flip(), shift({ padding: 8 })]
-  })
-  panelStyle.value = { left: `${result.x}px`, top: `${result.y}px`, position: result.strategy }
+  let result
+  try {
+    result = await computePosition(reference, panel, {
+      strategy: 'fixed',
+      placement: props.placement,
+      middleware: [
+        floatingOffset(Number.isFinite(props.offset) ? Math.max(0, props.offset) : 8),
+        flip(),
+        shift({ padding: 8 })
+      ]
+    })
+  } catch {
+    // 触发器可能在异步定位期间随路由卸载，此时静默丢弃过期结果。
+    return
+  }
+  panelStyle.value = {
+    left: `${result.x}px`,
+    top: `${result.y}px`,
+    position: result.strategy,
+    zIndex: String(overlayHandle?.zIndex ?? 2100)
+  }
 }
 
 const setOptionRef = (id: string, element: Element | ComponentPublicInstance | null): void => {
   if (element instanceof HTMLElement) optionRefs.set(id, element)
   else optionRefs.delete(id)
 }
-const optionId = (id: string): string => `${panelId}-option-${id.replace(/[^a-zA-Z0-9_-]/g, '-')}`
-
 const focusItem = (id?: string): void => {
   if (!id) return
   activeId.value = id
@@ -242,9 +271,6 @@ const handlePanelKeydown = (event: KeyboardEvent): void => {
   } else if (event.key === 'Home' || event.key === 'End') {
     event.preventDefault()
     focusItem(event.key === 'Home' ? enabledItems.value[0]?.id : enabledItems.value.at(-1)?.id)
-  } else if (event.key === 'Escape') {
-    event.preventDefault()
-    close()
   }
 }
 
@@ -273,6 +299,26 @@ const handleDocumentPointerdown = (event: PointerEvent): void => {
   if (!root.value?.contains(event.target) && !floating.value?.contains(event.target)) close(false)
 }
 
+const activateOverlay = (): void => {
+  if (overlayHandle || typeof document === 'undefined') return
+  // 建议面板必须进入共享浮层栈；否则位于 Modal 内时一次 ESC 会同时关闭两个层级。
+  overlayHandle = overlayManager.register({
+    type: 'custom',
+    closeOnEscape: true,
+    focusLayer: true,
+    onEscape: close
+  })
+  panelStyle.value = { ...panelStyle.value, zIndex: String(overlayHandle.zIndex) }
+  document.addEventListener('pointerdown', handleDocumentPointerdown, true)
+}
+
+const deactivateOverlay = (): void => {
+  overlayHandle?.unregister()
+  overlayHandle = undefined
+  if (typeof document !== 'undefined')
+    document.removeEventListener('pointerdown', handleDocumentPointerdown, true)
+}
+
 watch(
   () => [open.value, props.context, props.source] as const,
   ([isOpen]) => {
@@ -280,12 +326,15 @@ watch(
       controller?.abort()
       stopPositioning?.()
       stopPositioning = undefined
+      deactivateOverlay()
       return
     }
+    activateOverlay()
     load()
     nextTick(() => {
-      if (root.value && floating.value)
-        stopPositioning = autoUpdate(root.value, floating.value, updatePosition)
+      const reference = referenceElement()
+      if (reference && floating.value)
+        stopPositioning = autoUpdate(reference, floating.value, updatePosition)
       if (!props.source) status.value = props.items.length ? 'ready' : 'empty'
       const preserved = enabledItems.value.find(item => item.id === activeId.value)?.id
       focusItem(preserved ?? enabledItems.value[0]?.id)
@@ -301,14 +350,17 @@ watch(displayedItems, items => {
   focusItem(preserved ?? enabledItems.value[0]?.id)
 })
 
-if (typeof document !== 'undefined')
-  document.addEventListener('pointerdown', handleDocumentPointerdown, true)
+watch(
+  () => [props.placement, props.offset] as const,
+  () => {
+    if (open.value) void updatePosition()
+  }
+)
 
 onScopeDispose(() => {
   controller?.abort()
   stopPositioning?.()
-  if (typeof document !== 'undefined')
-    document.removeEventListener('pointerdown', handleDocumentPointerdown, true)
+  deactivateOverlay()
 })
 </script>
 

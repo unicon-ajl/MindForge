@@ -100,4 +100,14 @@ describe('TypewriterMachine', () => {
     expect(machine.getPhase()).toBe('completed')
     expect(vi.getTimerCount()).toBe(0)
   })
+
+  it('缺少 Intl.Segmenter 时仍保留常见扩展字素簇', () => {
+    const descriptor = Object.getOwnPropertyDescriptor(Intl, 'Segmenter')
+    Object.defineProperty(Intl, 'Segmenter', { configurable: true, value: undefined })
+    try {
+      expect(splitGraphemes('é👍🏽👨‍👩‍👧‍👦🇨🇳')).toEqual(['é', '👍🏽', '👨‍👩‍👧‍👦', '🇨🇳'])
+    } finally {
+      if (descriptor) Object.defineProperty(Intl, 'Segmenter', descriptor)
+    }
+  })
 })

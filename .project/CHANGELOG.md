@@ -1,6 +1,17 @@
 # MindForge 开发日志
 
-> 最后更新：2026-08-31
+> 最后更新：2026-09-01
+
+---
+
+## 2026-09-01 四项能力边界修复
+
+- Prompt Suggestions 与 Tooltip 接入共享浮层栈，修复 Modal 内 ESC 同时关闭多个层级；
+- Overlay Manager 区分 ESC 层级与焦点边界，非交互 Tooltip 不再暂停底层 Modal 焦点陷阱；
+- Modal 使用稳定 `useId()`，焦点陷阱补充更多原生元素、隐藏祖先判断和即时焦点回收；
+- Tooltip 支持多可见实例按后进先出关闭，并保留动态追加的 `aria-describedby`；
+- Typewriter 增加无 `Intl.Segmenter` 环境下的常见扩展字素 fallback；
+- Prompt Suggestions 改为真实触发器定位、按打开状态注册外部监听，并增强 payload/context 泛型推断。
 
 ---
 

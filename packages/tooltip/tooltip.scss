@@ -4,15 +4,16 @@
   width: max-content;
   max-width: min(var(--mf-tooltip-max-width, 320px), calc(100vw - 16px));
   padding: var(--mf-tooltip-padding, 8px 11px);
-  border: 1px solid var(--mf-tooltip-border, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--mf-tooltip-border, rgb(255 255 255 / 10%));
   border-radius: var(--mf-tooltip-radius, 8px);
   color: var(--mf-tooltip-color, #fff);
-  background: var(--mf-tooltip-background, rgba(24, 32, 51, 0.96));
-  box-shadow: var(--mf-tooltip-shadow, 0 8px 24px rgba(15, 20, 34, 0.2));
+  background: var(--mf-tooltip-background, rgb(24 32 51 / 96%));
+  box-shadow: var(--mf-tooltip-shadow, 0 8px 24px rgb(15 20 34 / 20%));
   font-size: var(--mf-tooltip-font-size, 12px);
   line-height: 1.5;
   overflow-wrap: anywhere;
   pointer-events: none;
+
   // 初始态保留在 DOM 中完成定位，再通过 open 类触发平滑入场。
   opacity: 0;
   transform: translateY(2px) scale(0.98);
@@ -29,7 +30,7 @@
     position: absolute;
     width: 10px;
     height: 10px;
-    color: var(--mf-tooltip-arrow-color, var(--mf-tooltip-background, rgba(24, 32, 51, 0.96)));
+    color: var(--mf-tooltip-arrow-color, var(--mf-tooltip-background, rgb(24 32 51 / 96%)));
 
     svg {
       // 箭头由指令按最终方向写入 SVG 路径，颜色与主题变量保持一致。
@@ -37,7 +38,7 @@
       width: 100%;
       height: 100%;
       overflow: visible;
-      fill: currentColor;
+      fill: currentcolor;
     }
   }
 
@@ -47,7 +48,7 @@
     --mf-tooltip-background: #fff;
     --mf-tooltip-arrow-color: #fff;
     --mf-tooltip-border: #e3e7ef;
-    --mf-tooltip-shadow: 0 8px 24px rgba(29, 39, 67, 0.13);
+    --mf-tooltip-shadow: 0 8px 24px rgb(29 39 67 / 13%);
 
     border-color: var(--mf-tooltip-border);
   }

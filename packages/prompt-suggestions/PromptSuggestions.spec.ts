@@ -4,6 +4,7 @@ import { createApp, h, nextTick, ref, type App } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import PromptSuggestions from './PromptSuggestions.vue'
 import type { PromptSuggestionSource } from './types'
+import { overlayManager } from '@internal/overlay'
 
 vi.mock('@floating-ui/dom', () => ({
   offset: vi.fn(() => ({ name: 'offset' })),
@@ -30,6 +31,7 @@ async function mount(props: Record<string, unknown>): Promise<HTMLElement> {
 afterEach(() => {
   app?.unmount()
   app = null
+  overlayManager.dispose()
   document.body.innerHTML = ''
 })
 
@@ -120,5 +122,27 @@ describe('MfPromptSuggestions', () => {
     await nextTick()
     expect(document.body.textContent).toContain('建议加载失败')
     expect(onLoadError).toHaveBeenCalledOnce()
+  })
+
+  it('consumes ESC before an underlying Modal overlay', async () => {
+    const closeModal = vi.fn()
+    const modal = overlayManager.register({
+      type: 'modal',
+      closeOnEscape: true,
+      blocksEscape: true,
+      onEscape: closeModal
+    })
+    const root = await mount({ open: true, items: [{ id: 'one', label: '建议' }] })
+    await nextTick()
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await nextTick()
+
+    expect(root.querySelector('button')?.getAttribute('aria-expanded')).toBe('false')
+    expect(closeModal).not.toHaveBeenCalled()
+
+    overlayManager.closeTopmost()
+    expect(closeModal).toHaveBeenCalledOnce()
+    modal.unregister()
   })
 })

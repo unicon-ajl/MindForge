@@ -10,6 +10,8 @@ export interface OverlayRegistration {
   closeOnEscape?: boolean
   /** 不处理 ESC 时是否阻止事件继续寻找下层浮层；Modal 通常应开启。 */
   blocksEscape?: boolean
+  /** 是否构成焦点边界；非交互 Tooltip 不应暂停底层 Modal 的焦点陷阱。 */
+  focusLayer?: boolean
   onEscape?: () => void
 }
 
@@ -19,6 +21,8 @@ export interface OverlayHandle {
   zIndex: number
   unregister: () => void
   isTopmost: () => boolean
+  /** 忽略 Tooltip、Loading 等非焦点浮层后，当前实例是否仍是最顶层焦点边界。 */
+  isTopmostFocusLayer: () => boolean
   /** 原位更新关闭策略，不改变既有浮层的栈顺序。 */
   update: (
     registration: Pick<OverlayRegistration, 'closeOnEscape' | 'blocksEscape' | 'onEscape'>
@@ -26,7 +30,7 @@ export interface OverlayHandle {
 }
 
 interface OverlayEntry extends Required<
-  Pick<OverlayRegistration, 'type' | 'closeOnEscape' | 'blocksEscape'>
+  Pick<OverlayRegistration, 'type' | 'closeOnEscape' | 'blocksEscape' | 'focusLayer'>
 > {
   id: number
   zIndex: number
@@ -106,6 +110,7 @@ export function createOverlayManager(baseZIndex = 2000): OverlayManager {
       type: registration.type ?? 'custom',
       closeOnEscape: registration.closeOnEscape ?? false,
       blocksEscape: registration.blocksEscape ?? false,
+      focusLayer: registration.focusLayer ?? registration.type === 'modal',
       onEscape: registration.onEscape
     }
     stack.push(entry)
@@ -124,6 +129,8 @@ export function createOverlayManager(baseZIndex = 2000): OverlayManager {
         syncListener()
       },
       isTopmost: () => stack.at(-1)?.id === entry.id,
+      isTopmostFocusLayer: () =>
+        [...stack].reverse().find(candidate => candidate.focusLayer)?.id === entry.id,
       update(nextRegistration) {
         if (!active) return
         entry.closeOnEscape = nextRegistration.closeOnEscape ?? false

@@ -4,7 +4,8 @@
       <h4>嵌套浮层与最顶层 ESC</h4>
       <button class="demo-button" @click="firstVisible = true">打开第一层 Modal</button>
       <p class="demo-tip">
-        第二层不显示关闭按钮，但仍可用 ESC 或遮罩关闭；顶层禁止 ESC 时不会误关下层。
+        第二层不显示关闭按钮，但仍可用 ESC 或遮罩关闭；Modal 内的 Tooltip 与建议面板只消费最顶层
+        ESC。
       </p>
     </div>
 
@@ -47,7 +48,13 @@
 
     <MfModal v-model:visible="firstVisible" title="第一层">
       <p>第一层保持打开，滚动锁不会被内层提前释放。</p>
-      <button class="demo-button" @click="secondVisible = true">打开第二层</button>
+      <div class="modal-demo-actions">
+        <button class="demo-button" @click="secondVisible = true">打开第二层</button>
+        <button v-tooltip="'ESC 只关闭当前 Tooltip'" class="demo-button demo-button--quiet">
+          Modal 内 Tooltip
+        </button>
+        <MfPromptSuggestions :items="modalSuggestions" trigger-label="Modal 内建议" />
+      </div>
     </MfModal>
     <MfModal v-model:visible="secondVisible" title="第二层" :closable="false">
       <p>当前只有这一层响应 ESC 和遮罩点击。</p>
@@ -64,12 +71,18 @@ import {
   type LoadingInstance,
   type MessageType
 } from '@packages/feedback'
+import { MfPromptSuggestions, type PromptSuggestion } from '@packages/prompt-suggestions'
+import { vTooltip } from '@packages/tooltip'
 
 const firstVisible = ref(false)
 const secondVisible = ref(false)
 const targetRef = ref<HTMLElement | null>(null)
 // 保存句柄让控制按钮位于遮罩外时仍可主动关闭局部 Loading。
 const loader = ref<LoadingInstance | null>(null)
+const modalSuggestions: PromptSuggestion[] = [
+  { id: 'inspect', label: '检查当前 Modal 状态' },
+  { id: 'continue', label: '继续下一步操作' }
+]
 
 const toggleLocalLoading = () => {
   if (loader.value) {
@@ -127,5 +140,12 @@ onScopeDispose(() => loader.value?.close())
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+.modal-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 16px;
 }
 </style>

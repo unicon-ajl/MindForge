@@ -9,6 +9,7 @@ import {
 } from '@floating-ui/dom'
 import type { Directive, DirectiveBinding } from 'vue'
 import type { TooltipBindingValue, TooltipOptions } from './types'
+import { overlayManager, type OverlayHandle } from '@internal/overlay'
 
 /** 指令内部使用的完整配置，避免交互阶段反复处理默认值。 */
 interface ResolvedTooltipOptions extends Required<Omit<TooltipOptions, 'delay'>> {
@@ -33,13 +34,13 @@ interface TooltipState {
   /** 延迟显示与延迟隐藏互相独立，快速移入移出时可准确取消。 */
   showTimer: ReturnType<typeof setTimeout> | null
   hideTimer: ReturnType<typeof setTimeout> | null
+  /** 共享浮层句柄负责 ESC 顺序和跨能力层级。 */
+  overlay: OverlayHandle | null
   /** 鼠标和焦点可能同时存在，任一仍活跃时都不能误隐藏。 */
   pointerActive: boolean
   focusActive: boolean
   /** ESC 主动关闭后的锁；所有触发源离开后才重置。 */
   dismissed: boolean
-  /** 保留业务已有的 aria-describedby，关闭时必须原样恢复。 */
-  previousDescribedBy: string | null
   handlers: {
     pointerEnter: (event: PointerEvent) => void
     pointerLeave: () => void
@@ -49,43 +50,15 @@ interface TooltipState {
 }
 
 const states = new WeakMap<HTMLElement, TooltipState>()
-/**
- * 当前响应 ESC 的 Tooltip。
- *
- * 页面切换或快速跨元素悬停时可能短暂存在多个浮层节点，但 ESC 只应关闭最后显示的实例。
- */
-let activeTooltip: { element: HTMLElement; state: TooltipState } | null = null
 let idSeed = 0
-
-/**
- * 从 document 接收 ESC，而不是监听目标元素。
- *
- * 仅鼠标悬停时目标元素通常没有焦点，键盘事件不会经过它；提升监听层级才能保证两种触发方式行为一致。
- */
-function handleDocumentKeyDown(event: KeyboardEvent): void {
-  if (event.key !== 'Escape' || !activeTooltip) return
-  const { element, state } = activeTooltip
-  state.dismissed = true
-  hide(element, state, true)
-}
-
-/** 切换当前活动实例；重复注册同一函数不会产生重复监听。 */
-function setActiveTooltip(element: HTMLElement, state: TooltipState): void {
-  activeTooltip = { element, state }
-  document.addEventListener('keydown', handleDocumentKeyDown)
-}
-
-/** 仅允许活动实例释放全局监听，防止旧实例的延迟清理影响新实例。 */
-function clearActiveTooltip(state: TooltipState): void {
-  // 旧实例延迟销毁时不能误删新实例注册的全局监听。
-  if (activeTooltip?.state !== state) return
-  activeTooltip = null
-  document.removeEventListener('keydown', handleDocumentKeyDown)
-}
 
 /** 将外部数值收敛为安全的非负数，NaN 和 Infinity 均回退为 0。 */
 const normalizeDelay = (value: number | undefined): number =>
   Number.isFinite(value) ? Math.max(0, value ?? 0) : 0
+
+/** 尺寸必须为有限正数；非法输入回退默认值，不能写出 NaNpx。 */
+const normalizeMaxWidth = (value: number | undefined): number =>
+  Number.isFinite(value) ? Math.max(80, value ?? 320) : 320
 
 /**
  * 将字符串简写、对象配置和 `.overflow` 修饰符统一为内部配置。
@@ -104,7 +77,7 @@ function resolveOptions(binding: DirectiveBinding<TooltipBindingValue>): Resolve
     overflow: binding.modifiers.overflow || source.overflow === true,
     disabled: source.disabled === true,
     offset: normalizeDelay(source.offset ?? 8),
-    maxWidth: Math.max(80, source.maxWidth ?? 320),
+    maxWidth: normalizeMaxWidth(source.maxWidth),
     showDelay: normalizeDelay(showDelay),
     hideDelay: normalizeDelay(hideDelay)
   }
@@ -125,24 +98,29 @@ function clearTimer(state: TooltipState, key: 'showTimer' | 'hideTimer'): void {
   state[key] = null
 }
 
-/** 恢复指令挂载前的无障碍描述关系，而不是简单删除整个属性。 */
-function restoreAria(element: HTMLElement, state: TooltipState): void {
-  // Tooltip 只追加自己的 id，销毁时不得覆盖业务原有的描述关系。
-  if (state.previousDescribedBy === null) element.removeAttribute('aria-describedby')
-  else element.setAttribute('aria-describedby', state.previousDescribedBy)
+/** 只移除当前 Tooltip 自己的 token，保留业务运行期间追加的描述关系。 */
+function removeAriaToken(element: HTMLElement, id?: string): void {
+  if (!id) return
+  const ids = (element.getAttribute('aria-describedby') ?? '')
+    .split(/\s+/)
+    .filter(candidate => candidate && candidate !== id)
+  if (ids.length) element.setAttribute('aria-describedby', ids.join(' '))
+  else element.removeAttribute('aria-describedby')
 }
 
 /** 统一释放一次 Tooltip 展示产生的全部运行资源。 */
 function removeTooltip(element: HTMLElement, state: TooltipState): void {
-  // DOM、全局键盘监听、自动定位监听和无障碍属性必须在同一出口成对清理。
+  // DOM、浮层注册、自动定位监听和无障碍属性必须在同一出口成对清理。
   state.stopAutoUpdate?.()
   state.stopAutoUpdate = null
+  const tooltipId = state.tooltip?.id
   state.tooltip?.remove()
   state.tooltip = null
   state.arrow = null
   state.arrowPath = null
-  clearActiveTooltip(state)
-  restoreAria(element, state)
+  state.overlay?.unregister()
+  state.overlay = null
+  removeAriaToken(element, tooltipId)
 }
 
 /**
@@ -153,17 +131,23 @@ async function updatePosition(element: HTMLElement, state: TooltipState): Promis
   const tooltip = state.tooltip
   const arrowElement = state.arrow
   if (!tooltip || !arrowElement) return
-  const result = await computePosition(element, tooltip, {
-    // fixed 不受祖先定位上下文影响，适合挂载在 body 下的浮层。
-    strategy: 'fixed',
-    placement: state.options.placement,
-    middleware: [
-      offset(state.options.offset),
-      flip({ padding: 8 }),
-      shift({ padding: 8 }),
-      arrow({ element: arrowElement, padding: 6 })
-    ]
-  })
+  let result
+  try {
+    result = await computePosition(element, tooltip, {
+      // fixed 不受祖先定位上下文影响，适合挂载在 body 下的浮层。
+      strategy: 'fixed',
+      placement: state.options.placement,
+      middleware: [
+        offset(state.options.offset),
+        flip({ padding: 8 }),
+        shift({ padding: 8 }),
+        arrow({ element: arrowElement, padding: 6 })
+      ]
+    })
+  } catch {
+    // 目标可能在异步定位期间被路由卸载，过期坐标无需再写回。
+    return
+  }
   // 定位是异步的；结果返回前浮层可能已关闭或被新实例替换。
   if (state.tooltip !== tooltip) return
   tooltip.style.left = `${result.x}px`
@@ -238,9 +222,17 @@ function show(element: HTMLElement, state: TooltipState): void {
     state.tooltip = tooltip
     state.arrow = arrowElement
     state.arrowPath = arrowPath
-    setActiveTooltip(element, state)
+    state.overlay = overlayManager.register({
+      type: 'custom',
+      closeOnEscape: true,
+      onEscape: () => {
+        state.dismissed = true
+        hide(element, state, true)
+      }
+    })
+    tooltip.style.zIndex = String(state.overlay.zIndex)
 
-    const ids = [state.previousDescribedBy, tooltip.id].filter(Boolean).join(' ')
+    const ids = [element.getAttribute('aria-describedby'), tooltip.id].filter(Boolean).join(' ')
     // 追加而不是覆盖，让读屏软件同时读取业务描述和 Tooltip 内容。
     element.setAttribute('aria-describedby', ids)
     // 自动跟随滚动、缩放及目标元素尺寸变化。
@@ -277,10 +269,10 @@ function bind(element: HTMLElement, binding: DirectiveBinding<TooltipBindingValu
   state.stopAutoUpdate = null
   state.showTimer = null
   state.hideTimer = null
+  state.overlay = null
   state.pointerActive = false
   state.focusActive = false
   state.dismissed = false
-  state.previousDescribedBy = element.getAttribute('aria-describedby')
   state.handlers = {
     pointerEnter: event => {
       // 触摸设备没有稳定的悬停语义，忽略触摸指针可避免点击时意外弹出。

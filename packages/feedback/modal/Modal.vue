@@ -51,7 +51,7 @@
 
 /** @module Modal 基于 Overlay Manager 的可访问模态对话框。 */
 <script setup lang="ts">
-import { computed, onScopeDispose, ref, useSlots, watch } from 'vue'
+import { computed, onScopeDispose, ref, useId, useSlots, watch } from 'vue'
 import { activateFocusTrap, overlayManager, type OverlayHandle } from '@internal/overlay'
 
 defineOptions({ name: 'MfModal' })
@@ -103,7 +103,7 @@ const emit = defineEmits<{
 const slots = useSlots()
 const dialogRef = ref<HTMLElement | null>(null)
 // 每个实例使用独立标题 id，避免多个 Modal 的 aria-labelledby 冲突。
-const titleId = `mf-modal-title-${Math.random().toString(36).slice(2, 10)}`
+const titleId = `mf-modal-title-${useId()}`
 const closeLabel = computed(() => props.closeLabel)
 // 默认标题通过 aria-labelledby 关联；自定义标题无法安全注入 id，改用显式名称或 title。
 const dialogLabel = computed(() => props.ariaLabel || (slots.header ? props.title : ''))
@@ -168,7 +168,10 @@ const disposeOverlay = (): void => {
 const handleAfterEnter = (): void => {
   // 动画结束后再聚焦，避免聚焦尚未稳定的节点。
   if (props.trapFocus && dialogRef.value && overlayHandle && !releaseFocus) {
-    releaseFocus = activateFocusTrap(dialogRef.value, () => overlayHandle?.isTopmost() ?? false)
+    releaseFocus = activateFocusTrap(
+      dialogRef.value,
+      () => overlayHandle?.isTopmostFocusLayer() ?? false
+    )
   }
 }
 

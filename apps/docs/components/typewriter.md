@@ -69,6 +69,7 @@ type TypewriterPhase = 'idle' | 'typing' | 'holding' | 'deleting' | 'paused' | '
 ## 无障碍
 
 - 使用 `Intl.Segmenter` 避免拆开 Emoji 和组合字符；
+- 缺少 `Intl.Segmenter` 时使用内置 fallback，继续保护组合标记、肤色、ZWJ、旗帜和键帽等常见字素簇；
 - 动画文字不逐字触发读屏，完整文本输入完成后才播报；
 - 默认遵循 `prefers-reduced-motion`，需要时可设置 `reduced-motion="always"`；
 - 光标在减弱动画模式下停止闪烁。
